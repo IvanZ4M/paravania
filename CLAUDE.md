@@ -14,8 +14,10 @@ Proyecto personal. Se abre desde el navegador in-app de WhatsApp en celular.
   `icon-512.png`). Nada más. Peso total del repo: ~3.3 MB, casi todo fotos.
 - **Rutas siempre relativas:** `./img/foto-01.jpg`. **Nunca** con `/` inicial.
   El sitio vive en un subdirectorio (`/paravania/`) y una ruta absoluta rompe todo.
-- **Deploy:** GitHub Pages, repo `paravania`.
-  URL: https://diegozamarronesc-a11y.github.io/paravania/
+- **Deploy:** GitHub Pages, repo `paravania` en la cuenta `IvanZ4M`.
+  URL: https://ivanz4m.github.io/paravania/
+  (El subdirectorio `/paravania/` es lo que importa, no la cuenta: como todas
+  las rutas son relativas, la página funciona igual en cualquier usuario.)
 - **`<meta name="robots" content="noindex, nofollow">`** — esto es privado.
 - **PWA ligera:** `manifest.json` + `apple-touch-icon` para "agregar a pantalla de inicio".
   Sin service worker (no hace falta y complica).
