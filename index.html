@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Vania · 1 mes</title>
+
+<meta name="theme-color" content="#1a0d10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vania · 1 mes">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png" type="image/png">
+
+<!-- Fuentes: se precargan los 3 woff2 (ambas son variable fonts, un archivo por
+     estilo) y se declaran los @font-face aquí mismo. Así no hay petición extra al
+     CSS de Google y el texto no salta. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2">
+<style>
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2) format('woff2');
+  }
+  @font-face {
+    font-family: 'Cormorant Garamond';
+    font-style: italic;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2) format('woff2');
+  }
+  @font-face {
+    font-family: 'Jost';
+    font-style: normal;
+    font-weight: 300 600;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/jost/v20/92zatBhPNqw73oTd4g.woff2) format('woff2');
+  }
+</style>
+
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Flores dibujadas a mano. Se reusan con <use href="#fl-...">.
+     ══════════════════════════════════════════════════════════════════════ -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- pétalos base de la gerbera -->
+    <path id="p-ger-fuera" d="M50 50 C43 38 41 20 50 4 C59 20 57 38 50 50 Z"/>
+    <path id="p-ger-dentro" d="M50 50 C45 42 44 30 50 21 C56 30 55 42 50 50 Z"/>
+    <!-- pétalo de rosa: angosto, para que se vean los huecos entre pétalos -->
+    <path id="p-rosa" d="M50 50 C42 47 37 38 39 29 C42 21 58 21 61 29 C63 38 58 47 50 50 Z"/>
+    <!-- tépalo del lirio: puntiagudo y recurvado -->
+    <path id="p-lili" d="M50 50 C41 38 38 16 50 3 C62 16 59 38 50 50 Z"/>
+  </defs>
+
+  <!-- ── Gerbera roja ──────────────────────────────────────────────────── -->
+  <symbol id="fl-gerbera" viewBox="0 0 100 100">
+    <g fill="var(--fl-rojo, #c2384a)">
+      <use href="#p-ger-fuera" transform="rotate(0 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(30 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(60 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(90 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(120 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(150 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(180 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(210 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(240 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(270 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(300 50 50)"/>
+      <use href="#p-ger-fuera" transform="rotate(330 50 50)"/>
+    </g>
+    <g fill="var(--fl-rojo-hondo, #8e1f30)">
+      <use href="#p-ger-dentro" transform="rotate(15 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(45 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(75 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(105 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(135 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(165 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(195 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(225 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(255 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(285 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(315 50 50)"/>
+      <use href="#p-ger-dentro" transform="rotate(345 50 50)"/>
+    </g>
+    <circle cx="50" cy="50" r="10" fill="var(--fl-centro, #5c1220)"/>
+    <circle cx="50" cy="50" r="5.5" fill="none" stroke="var(--fl-rojo, #c2384a)"
+            stroke-width="1.6" stroke-dasharray="1.2 2.6" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- ── Rosa blanca ───────────────────────────────────────────────────── -->
+  <symbol id="fl-rosa" viewBox="0 0 100 100">
+    <g fill="var(--fl-crema, #f5ece4)" stroke="var(--fl-linea, #c9b6a8)"
+       stroke-width="1.5" stroke-linejoin="round">
+      <use href="#p-rosa" transform="rotate(0 50 50)"/>
+      <use href="#p-rosa" transform="rotate(72 50 50)"/>
+      <use href="#p-rosa" transform="rotate(144 50 50)"/>
+      <use href="#p-rosa" transform="rotate(216 50 50)"/>
+      <use href="#p-rosa" transform="rotate(288 50 50)"/>
+    </g>
+    <g fill="var(--fl-crema-2, #e8dad0)" stroke="var(--fl-linea, #c9b6a8)"
+       stroke-width="2.4" stroke-linejoin="round"
+       transform="translate(50 50) rotate(36) scale(.66) translate(-50 -50)">
+      <use href="#p-rosa" transform="rotate(0 50 50)"/>
+      <use href="#p-rosa" transform="rotate(72 50 50)"/>
+      <use href="#p-rosa" transform="rotate(144 50 50)"/>
+      <use href="#p-rosa" transform="rotate(216 50 50)"/>
+      <use href="#p-rosa" transform="rotate(288 50 50)"/>
+    </g>
+    <!-- el remolino del centro, que es lo que la vuelve rosa y no margarita -->
+    <path d="M50 58 C41 56 36 47 42 41 C49 34 61 38 62 47 C63 56 54 61 47 57 C41 53 42 45 49 44"
+          fill="none" stroke="var(--fl-linea, #c9b6a8)" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- ── Lili (lirio) ──────────────────────────────────────────────────── -->
+  <symbol id="fl-lili" viewBox="0 0 100 100">
+    <g fill="var(--fl-crema, #f5ece4)">
+      <use href="#p-lili" transform="rotate(0 50 50)"/>
+      <use href="#p-lili" transform="rotate(60 50 50)"/>
+      <use href="#p-lili" transform="rotate(120 50 50)"/>
+      <use href="#p-lili" transform="rotate(180 50 50)"/>
+      <use href="#p-lili" transform="rotate(240 50 50)"/>
+      <use href="#p-lili" transform="rotate(300 50 50)"/>
+    </g>
+    <g stroke="var(--fl-vena, #d8c2b4)" stroke-width="1.2" stroke-linecap="round" fill="none">
+      <path d="M50 47 L50 12" transform="rotate(0 50 50)"/>
+      <path d="M50 47 L50 12" transform="rotate(60 50 50)"/>
+      <path d="M50 47 L50 12" transform="rotate(120 50 50)"/>
+      <path d="M50 47 L50 12" transform="rotate(180 50 50)"/>
+      <path d="M50 47 L50 12" transform="rotate(240 50 50)"/>
+      <path d="M50 47 L50 12" transform="rotate(300 50 50)"/>
+    </g>
+    <g stroke="var(--fl-tallo, #6f8466)" stroke-width="1.4" stroke-linecap="round" fill="none">
+      <path d="M50 50 L44 33"/><path d="M50 50 L57 34"/><path d="M50 50 L38 42"/>
+      <path d="M50 50 L62 43"/><path d="M50 50 L50 32"/>
+    </g>
+    <g fill="var(--fl-rojo, #c2384a)">
+      <ellipse cx="44" cy="32" rx="2.6" ry="1.7" transform="rotate(-18 44 32)"/>
+      <ellipse cx="57" cy="33" rx="2.6" ry="1.7" transform="rotate(16 57 33)"/>
+      <ellipse cx="37" cy="41" rx="2.6" ry="1.7" transform="rotate(-36 37 41)"/>
+      <ellipse cx="63" cy="42" rx="2.6" ry="1.7" transform="rotate(34 63 42)"/>
+      <ellipse cx="50" cy="31" rx="2.6" ry="1.7"/>
+    </g>
+  </symbol>
+
+  <!-- ── Pétalo suelto (los que caen de fondo) ─────────────────────────── -->
+  <symbol id="fl-petalo" viewBox="0 0 24 36">
+    <path d="M12 0 C20 9 23 24 12 36 C1 24 4 9 12 0 Z" fill="currentColor"/>
+  </symbol>
+
+  <!-- ── Ornamento de esquina: tallo con hojas y capullo ───────────────── -->
+  <symbol id="fl-ornamento" viewBox="0 0 60 60">
+    <g fill="none" stroke="currentColor" stroke-width="1.15"
+       stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 2 C15 11 25 24 30 40"/>
+      <path d="M10 11 C18 8 26 12 28 20 C20 23 12 19 10 11 Z"
+            fill="currentColor" fill-opacity=".18"/>
+      <path d="M20 25 C27 21 35 24 37 31 C29 34 22 32 20 25 Z"
+            fill="currentColor" fill-opacity=".18"/>
+      <path d="M30 40 C24 44 23 52 29 56 C36 52 36 44 30 40 Z"
+            fill="currentColor" fill-opacity=".26"/>
+    </g>
+  </symbol>
+
+  <!-- ── Chevron de "siguiente" ────────────────────────────────────────── -->
+  <symbol id="ic-abajo" viewBox="0 0 24 24">
+    <path d="M5 9 L12 16 L19 9" fill="none" stroke="currentColor" stroke-width="1.4"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<!-- Pétalos flotando de fondo (los llena el JS) -->
+<div class="fondo" id="fondo" aria-hidden="true"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     Las 7 secciones
+     ══════════════════════════════════════════════════════════════════════ -->
+<main class="deck" id="deck">
+  <div class="deck__pista" id="pista">
+
+    <!-- ── 1 · Portada ──────────────────────────────────────────────── -->
+    <section class="seccion portada" id="s-portada" aria-label="Portada">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <div class="seccion__caja portada__caja">
+
+        <button class="sobre" id="sobre" type="button" aria-label="Abrir el sobre">
+          <span class="sobre__marco">
+
+            <!-- solapa: se abre hacia atrás -->
+            <svg class="sobre__solapa" viewBox="0 0 300 114" aria-hidden="true">
+              <path d="M2 3 H298 L150 110 Z" fill="#efe3d9"/>
+              <path d="M2 3 H298 L150 110 Z" fill="none" stroke="#cdb8a8" stroke-width="1.2"/>
+            </svg>
+
+            <!-- la tarjeta que sale del sobre -->
+            <span class="tarjeta" id="tarjeta">
+              <svg class="tarjeta__flor" viewBox="0 0 100 100" aria-hidden="true">
+                <use href="#fl-gerbera"/>
+              </svg>
+              <span class="tarjeta__nombre" data-linea>Vania</span>
+              <span class="tarjeta__rayita" data-linea></span>
+              <span class="tarjeta__mes" data-linea>1 mes</span>
+              <span class="tarjeta__fecha" data-linea id="portadaFecha"></span>
+            </span>
+
+            <!-- cuerpo del sobre, por delante de la tarjeta -->
+            <svg class="sobre__cuerpo" viewBox="0 0 300 200" aria-hidden="true">
+              <defs>
+                <linearGradient id="grad-papel" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#e9dbcf"/>
+                  <stop offset="1" stop-color="#dccbbc"/>
+                </linearGradient>
+              </defs>
+              <rect x="1" y="1" width="298" height="198" rx="4"
+                    fill="url(#grad-papel)" stroke="#cdb8a8" stroke-width="1.2"/>
+              <path d="M1 1 L150 104 L299 1" fill="none" stroke="#cdb8a8"
+                    stroke-width="1" opacity=".5"/>
+            </svg>
+
+            <!-- sello de lacre con gerbera -->
+            <span class="sobre__sello" aria-hidden="true">
+              <svg class="sobre__sello-flor" viewBox="0 0 100 100">
+                <use href="#fl-gerbera"/>
+              </svg>
+            </span>
+
+          </span>
+        </button>
+
+        <p class="portada__pista" id="portadaPista">toca para abrir</p>
+
+      </div>
+    </section>
+
+    <!-- ── 2 · Contador en vivo ─────────────────────────────────────── -->
+    <section class="seccion contador" id="s-contador" aria-label="Contador">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <div class="seccion__caja contador__caja">
+        <svg class="contador__flor" data-revelar viewBox="0 0 100 100" aria-hidden="true">
+          <use href="#fl-rosa"/>
+        </svg>
+
+        <p class="contador__intro" data-revelar>
+          Juntos desde el <span id="contadorDesde"></span>
+        </p>
+
+        <div class="cifras" data-revelar role="timer" aria-live="off"
+             aria-label="Tiempo juntos">
+          <div class="cifra">
+            <span class="cifra__n" id="cDias">0</span>
+            <span class="cifra__t">días</span>
+          </div>
+          <div class="cifra">
+            <span class="cifra__n" id="cHoras">00</span>
+            <span class="cifra__t">horas</span>
+          </div>
+          <div class="cifra">
+            <span class="cifra__n" id="cMinutos">00</span>
+            <span class="cifra__t">minutos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3 · Galería ──────────────────────────────────────────────── -->
+    <section class="seccion galeria" id="s-galeria" aria-label="Galería">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <div class="galeria__todo">
+        <header class="galeria__cabeza">
+          <h2 class="galeria__titulo" data-revelar>Un mes en fotos</h2>
+          <p class="galeria__sub" data-revelar>todo lo que cabe en un mes</p>
+        </header>
+
+        <!-- data-scroll-h: le dice al motor de gestos que aquí manda el dedo -->
+        <div class="galeria__pista" id="galeriaPista" data-scroll-h
+             tabindex="0" role="group" aria-label="Nuestras fotos"></div>
+
+        <div class="galeria__pie">
+          <!-- Línea propia de cada foto -->
+          <p class="galeria__linea" id="galeriaLinea">veniste riéndote todo el camino</p>
+          <!-- Etiqueta del momento + contador, en un solo renglón -->
+          <p class="galeria__meta">
+            <span class="galeria__momento" id="galeriaMomento">las primeras flores</span>
+            <span class="galeria__cuenta" id="galeriaCuenta">
+              <span id="galeriaN">01</span>
+              <span class="galeria__barra">/</span>
+              <span id="galeriaTotal">22</span>
+            </span>
+          </p>
+          <p class="galeria__desliza" id="galeriaDesliza">desliza</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4 · La canción ───────────────────────────────────────────── -->
+    <section class="seccion cancion" id="s-cancion" aria-label="La canción">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <!-- Pétalos densos, solo mientras suena -->
+      <div class="cancion__petalos" id="cancionPetalos" aria-hidden="true"></div>
+
+      <div class="seccion__caja cancion__caja">
+        <p class="cancion__sobre" data-revelar>te dedico esta canción</p>
+        <h2 class="cancion__titulo" data-revelar>Te quiero tanto</h2>
+        <p class="cancion__artista" data-revelar>Kevin Kaarl</p>
+
+        <div class="filete" data-revelar aria-hidden="true">
+          <span class="filete__linea"></span>
+          <svg class="filete__flor" viewBox="0 0 100 100"><use href="#fl-gerbera"/></svg>
+          <span class="filete__linea"></span>
+        </div>
+
+        <!-- El marco reserva el espacio del video desde el principio,
+             para que al tocar play nada se mueva de sitio -->
+        <div class="cancion__marco" id="cancionMarco" data-revelar>
+          <button class="play" id="cancionPlay" type="button"
+                  aria-label="Reproducir Te quiero tanto, de Kevin Kaarl">
+            <span class="play__halo" aria-hidden="true"></span>
+            <svg class="play__ic" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.2 6.3 L18 12 L9.2 17.7 Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="cancion__pista" id="cancionPista">toca para escucharla</p>
+
+        <!-- La nota aparece hasta que la canción está sonando.
+             Se despliega con grid-template-rows para que no reserve
+             un hueco vacío antes de tiempo. -->
+        <div class="cancion__nota">
+          <div class="cancion__nota-caja">
+            <p class="cancion__nota-linea">
+              Porque desde que te conozco hay canciones que ya no suenan igual.
+            </p>
+            <p class="cancion__nota-linea">
+              Esta es una de ellas, y cada vez que la escucho eres tú.
+            </p>
+            <p class="cancion__sigue">sigue sonando mientras avanzas</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5 · La carta ─────────────────────────────────────────────── -->
+    <!-- Texto literal de Ivan. No se reescribe ni se le corrigen las comas. -->
+    <section class="seccion carta" id="s-carta" aria-label="La carta">
+      <div class="seccion__caja carta__caja">
+
+        <!-- La hoja: es el papel que venía dentro del sobre de la portada -->
+        <article class="hoja" data-revelar>
+          <div class="hoja__doblez" aria-hidden="true"></div>
+
+          <div class="hoja__texto">
+            <p class="carta__saludo" data-revelar>Vania,</p>
+
+            <p class="carta__parrafo" data-revelar>
+              Hace un mes te pregunté algo y dijiste que sí, y desde ese día
+              todo tiene un nombre.
+            </p>
+
+            <p class="carta__parrafo" data-revelar>
+              Este mes me confirmó que tomé la mejor decisión, que eres
+              exactamente la persona con la que quiero estar, y que lo que
+              siento por ti no para de crecer.
+            </p>
+
+            <p class="carta__parrafo" data-revelar>
+              Gracias por este mes amor. Gracias por elegirme también.
+            </p>
+
+            <div class="filete carta__filete" data-revelar aria-hidden="true">
+              <span class="filete__linea"></span>
+              <svg class="filete__flor" viewBox="0 0 100 100"><use href="#fl-rosa"/></svg>
+              <span class="filete__linea"></span>
+            </div>
+
+            <p class="carta__firma" data-revelar>Te amo. — Ivan</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ── 6 · Cosas que me gustan de ti ──────────────── -->
+    <!-- Las seis tarjetas se arman desde la constante GUSTOS de script.js -->
+    <section class="seccion gustos" id="s-tarjetas" aria-label="Cosas que me gustan de ti">
+      <div class="seccion__caja gustos__caja">
+        <h2 class="gustos__titulo" data-revelar>Cosas que me gustan de ti</h2>
+        <p class="gustos__sub" data-revelar>seis, de muchas</p>
+
+        <ul class="gustos__rejilla" id="gustosRejilla"></ul>
+
+        <p class="gustos__pista" id="gustosPista">tócalas</p>
+      </div>
+    </section>
+
+    <!-- ── 7 · Cierre ───────────────────────────────────────────────── -->
+    <section class="seccion cierre" id="s-cierre" aria-label="Cierre">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <div class="seccion__caja cierre__caja">
+        <!-- La gerbera se arma desde el JS: cada pétalo necesita su propio
+             retraso para poder abrirse uno tras otro -->
+        <svg class="cierre__flor" id="cierreFlor" viewBox="0 0 100 100" aria-hidden="true"></svg>
+
+        <p class="cierre__sobre" data-revelar>para volver a verte</p>
+
+        <div class="cifras" data-revelar role="timer" aria-live="off"
+             aria-label="Cuenta regresiva para vernos">
+          <div class="cifra">
+            <span class="cifra__n" id="fDias">0</span>
+            <span class="cifra__t">días</span>
+          </div>
+          <div class="cifra">
+            <span class="cifra__n" id="fHoras">00</span>
+            <span class="cifra__t">horas</span>
+          </div>
+          <div class="cifra">
+            <span class="cifra__n" id="fMinutos">00</span>
+            <span class="cifra__t">minutos</span>
+          </div>
+        </div>
+
+        <div class="filete cierre__filete" data-revelar aria-hidden="true">
+          <span class="filete__linea"></span>
+          <svg class="filete__flor" viewBox="0 0 100 100"><use href="#fl-gerbera"/></svg>
+          <span class="filete__linea"></span>
+        </div>
+
+        <p class="cierre__final" data-revelar>Y ya estoy contando los días.</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Indicador de progreso (lo llena el JS) -->
+<nav class="progreso" id="progreso" aria-label="Progreso"></nav>
+
+<!-- Botón siguiente -->
+<button class="siguiente" id="siguiente" type="button" aria-label="Siguiente">
+  <svg class="siguiente__ic" aria-hidden="true"><use href="#ic-abajo"/></svg>
+</button>
+
+<script src="./script.js" defer></script>
+</body>
+</html>

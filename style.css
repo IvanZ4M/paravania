@@ -1,0 +1,1483 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   paravania — hoja de estilo
+   Orden: tokens · reset · deck y navegación · fondo de pétalos · secciones
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+:root {
+  /* Paleta: derivada de gerbera roja, lili y rosa blanca */
+  --bg:          #1a0d10;   /* vino muy oscuro, nunca negro puro */
+  --bg-2:        #241316;
+  --bg-3:        #2e181c;
+  --rojo:        #c2384a;
+  --rojo-hondo:  #8e1f30;
+  --crema:       #f5ece4;
+  --texto:       #e3d5cd;
+  --tenue:       #a48d88;
+  --verde:       #6f8466;
+  --verde-claro: #9bab8e;
+
+  /* Tipografía */
+  --serif: 'Cormorant Garamond', 'Iowan Old Style', 'Times New Roman', Times, serif;
+  --sans:  'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Escala fluida: 380px → 1024px */
+  --t-display: clamp(3.5rem, 2.5rem + 4.2vw, 5.8rem);
+  --t-titulo:  clamp(2.1rem, 1.6rem + 2.2vw, 3.6rem);
+  --t-sub:     clamp(1.35rem, 1.15rem + .9vw, 2rem);
+  --t-cuerpo:  clamp(1rem, .93rem + .32vw, 1.22rem);
+  --t-chico:   clamp(.82rem, .78rem + .18vw, .95rem);
+  --t-micro:   clamp(.66rem, .63rem + .13vw, .76rem);
+
+  /* Ritmo */
+  --ancho-caja: min(100% - 2.75rem, 33rem);
+  --alto: 100dvh;              /* el JS lo sustituye por px reales */
+
+  /* Movimiento: nunca linear, nunca rebote */
+  --ease:       cubic-bezier(.22, .61, .36, 1);
+  --ease-suave: cubic-bezier(.33, 0, .12, 1);
+  --ease-caer:  cubic-bezier(.37, .15, .63, .85);
+  --dur-corta:  600ms;
+  --dur-media:  760ms;
+  --dur-larga:  900ms;
+
+  --n: 7;    /* número de secciones */
+  --i: 0;    /* sección activa */
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;              /* la página nunca hace scroll; se navega por secciones */
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--texto);
+  font-family: var(--sans);
+  font-size: var(--t-cuerpo);
+  font-weight: 300;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+/* Halo cálido para que el fondo no se lea como un plano muerto */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% -10%, #3a1b21 0%, transparent 60%),
+    radial-gradient(100% 70% at 50% 110%, #24101a 0%, transparent 62%);
+}
+
+h1, h2, h3, p { margin: 0; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img { display: block; max-width: 100%; }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* Solo para lectores de pantalla */
+.oculto-visual {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ── Deck: las 7 secciones apiladas ─────────────────────────────────────── */
+.deck {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.deck__pista {
+  height: calc(var(--alto) * var(--n));
+  transform: translate3d(0, calc(var(--alto) * var(--i) * -1), 0);
+  transition: transform var(--dur-larga) var(--ease-suave);
+  will-change: transform;
+}
+
+.seccion {
+  position: relative;
+  height: var(--alto);
+  display: grid;
+  place-items: center;
+  padding:
+    calc(env(safe-area-inset-top) + 3.5rem)
+    calc(env(safe-area-inset-right) + 1rem)
+    calc(env(safe-area-inset-bottom) + 5.5rem)
+    calc(env(safe-area-inset-left) + 1rem);
+  overflow: hidden;
+}
+
+.seccion__caja {
+  width: var(--ancho-caja);
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* Provisional: marcador de sección mientras se construye cada una */
+.marcador {
+  font-family: var(--serif);
+  font-size: var(--t-sub);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--tenue);
+}
+
+/* ── Revelado al entrar (IntersectionObserver añade .visible) ───────────── */
+[data-revelar] {
+  opacity: 0;
+  transform: translate3d(0, 1.15rem, 0);
+  transition:
+    opacity    var(--dur-larga) var(--ease) var(--retraso, 0ms),
+    transform  var(--dur-larga) var(--ease) var(--retraso, 0ms);
+}
+[data-revelar].visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Indicador de progreso ──────────────────────────────────────────────── */
+.progreso {
+  position: fixed;
+  z-index: 3;
+  right: calc(env(safe-area-inset-right) + .7rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  padding: .35rem;
+}
+
+.progreso__punto {
+  width: 3px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--tenue);
+  opacity: .32;
+  transition:
+    height     var(--dur-corta) var(--ease),
+    opacity    var(--dur-corta) var(--ease),
+    background var(--dur-corta) var(--ease);
+}
+
+.progreso__punto[aria-current="true"] {
+  height: 17px;
+  opacity: 1;
+  background: var(--rojo);
+}
+
+/* ── Botón siguiente ────────────────────────────────────────────────────── */
+.siguiente {
+  position: fixed;
+  z-index: 3;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
+  width: 46px;
+  height: 46px;
+  margin-left: -23px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(245, 236, 228, .17);
+  border-radius: 50%;
+  color: var(--crema);
+  background: rgba(26, 13, 16, .38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: .72;
+  transition:
+    opacity   var(--dur-corta) var(--ease),
+    transform var(--dur-corta) var(--ease),
+    border-color var(--dur-corta) var(--ease);
+  animation: respirar 4.2s var(--ease-suave) infinite;
+}
+
+.siguiente__ic { width: 21px; height: 21px; }
+
+.siguiente:active {
+  transform: scale(.93);
+  opacity: 1;
+  border-color: rgba(194, 56, 74, .55);
+}
+
+/* Se esconde en la última sección y mientras la portada está cerrada */
+.siguiente[hidden],
+.siguiente.esta-fuera {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, .5rem, 0);
+  animation: none;
+}
+
+/* Flotación mínima, no un rebote */
+@keyframes respirar {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, 4px, 0); }
+}
+
+/* ── Fondo: pétalos flotando ────────────────────────────────────────────── */
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.petalo {
+  position: absolute;
+  top: -14%;
+  left: var(--x);
+  width: var(--w);
+  height: auto;
+  color: var(--c);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: caer var(--dur) var(--ease-caer) var(--retraso) infinite;
+}
+
+@keyframes caer {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  9%   { opacity: var(--op); }
+  50%  { transform: translate3d(var(--dx), calc(var(--alto) * .55), 0)
+                    rotate(calc(var(--giro) * .5)); }
+  86%  { opacity: var(--op); }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dx) * -.35), calc(var(--alto) * 1.2), 0)
+               rotate(var(--giro));
+  }
+}
+
+/* ── Ornamentos de esquina ──────────────────────────────────────────────── */
+.ornamentos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--verde);
+  opacity: 0;
+  transition: opacity 1400ms var(--ease) 500ms;
+}
+.lista .ornamentos { opacity: .3; }
+
+.ornamento {
+  position: absolute;
+  width: clamp(52px, 15vw, 96px);
+  height: auto;
+  aspect-ratio: 1;
+}
+.ornamento--ti { top: 1.4rem; left: 1.4rem; }
+.ornamento--id { bottom: 1.4rem; right: 1.4rem; transform: rotate(180deg); }
+
+/* ── Filete: línea · flor · línea. Ornamento reutilizable ───────────────── */
+.filete {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  width: min(100%, 15rem);
+  margin-inline: auto;
+}
+
+.filete__linea {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent, rgba(245, 236, 228, .28), transparent);
+}
+
+.filete__flor {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  opacity: .75;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   1 · Portada
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.portada__caja {
+  display: grid;
+  justify-items: center;
+  gap: clamp(2rem, 7vw, 3rem);
+}
+
+.sobre {
+  position: relative;
+  display: block;
+  width: min(74vw, 302px);
+  aspect-ratio: 3 / 2;
+  opacity: 0;
+  transform: translate3d(0, 2.2rem, 0) scale(.955);
+  transition:
+    opacity   1200ms var(--ease) 260ms,
+    transform 1200ms var(--ease) 260ms;
+}
+.portada.lista .sobre { opacity: 1; transform: none; }
+
+.sobre__marco {
+  position: absolute;
+  inset: 0;
+  perspective: 1100px;
+}
+
+/* Solapa */
+.sobre__solapa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 57%;
+  z-index: 3;
+  transform-origin: 50% 0;
+  transition:
+    transform 1000ms var(--ease-suave),
+    opacity   var(--dur-media) var(--ease) 120ms;
+  filter: drop-shadow(0 5px 9px rgba(0, 0, 0, .32));
+}
+.sobre.abriendo .sobre__solapa { transform: rotateX(-172deg); }
+
+/* Cuerpo */
+.sobre__cuerpo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  filter: drop-shadow(0 16px 34px rgba(0, 0, 0, .5));
+  transition: opacity var(--dur-media) var(--ease) 120ms;
+}
+
+.sobre.abierto .sobre__cuerpo,
+.sobre.abierto .sobre__solapa { opacity: 0; }
+
+/* Sello de lacre */
+.sobre__sello {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 17%;
+  aspect-ratio: 1;
+  margin: -8.5% 0 0 -8.5%;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  /* Lacre: mate, no plástico */
+  background: radial-gradient(circle at 38% 32%, #8f2033 0%, #6a1425 62%, #57101f 100%);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, .45),
+    inset 0 0 0 1px rgba(0, 0, 0, .22);
+  transition:
+    opacity   420ms var(--ease),
+    transform 420ms var(--ease);
+}
+.sobre__sello-flor {
+  width: 72%;
+  height: 72%;
+  /* Flor hundida en el lacre, no impresa encima */
+  --fl-rojo: rgba(255, 232, 224, .3);
+  --fl-rojo-hondo: rgba(40, 6, 14, .3);
+  --fl-centro: rgba(40, 6, 14, .38);
+}
+.sobre.abriendo .sobre__sello {
+  opacity: 0;
+  transform: scale(.42) rotate(-22deg);
+}
+
+/* Tarjeta */
+.tarjeta {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 89%;
+  height: 87%;
+  transform: translate(-50%, -50%);
+  transition: transform 1150ms var(--ease-suave);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .5rem;
+  padding: 1rem;
+  border-radius: 3px;
+  background: linear-gradient(#f8f1ea, #eee1d7);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+  text-align: center;
+}
+
+.sobre.saliendo .tarjeta {
+  z-index: 4;
+  transform: translate(-50%, -50%) translateY(-62%);
+}
+.sobre.abierto .tarjeta {
+  z-index: 4;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.tarjeta__flor  { width: 26px; height: 26px; }
+.tarjeta__nombre {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 8.5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: .05em;
+  color: #4a121c;
+}
+.tarjeta__rayita {
+  width: 34px;
+  height: 1px;
+  background: var(--rojo);
+  opacity: .5;
+}
+.tarjeta__mes {
+  font-family: var(--sans);
+  font-size: .58rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  color: #96605a;
+}
+.tarjeta__fecha {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .82rem;
+  color: #7d4a48;
+}
+
+/* Las líneas de la tarjeta aparecen ya que se asentó */
+.tarjeta [data-linea] {
+  opacity: 0;
+  transform: translate3d(0, .45rem, 0);
+  transition:
+    opacity   750ms var(--ease) var(--retraso, 0ms),
+    transform 750ms var(--ease) var(--retraso, 0ms);
+}
+.sobre.abierto .tarjeta [data-linea] { opacity: 1; transform: none; }
+.tarjeta__nombre { --retraso: 520ms; }
+.tarjeta__rayita { --retraso: 660ms; }
+.tarjeta__mes    { --retraso: 790ms; }
+.tarjeta__fecha  { --retraso: 910ms; }
+
+/* Pista "toca para abrir" */
+.portada__pista {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  text-indent: .32em;
+  color: var(--tenue);
+  opacity: 0;
+  transition: opacity 900ms var(--ease) 1300ms;
+}
+.portada.lista  .portada__pista { opacity: .7; }
+.portada.abierta .portada__pista { opacity: 0; transition-delay: 0ms; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   2 · Contador en vivo   ·   acento: blanco crema (rosa)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.contador__caja {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.4rem, 5vw, 2.1rem);
+}
+
+.contador__flor {
+  width: clamp(46px, 13vw, 64px);
+  height: auto;
+  opacity: .92;
+  --fl-crema: #efe4dc;
+  --fl-crema-2: #d9c9be;
+  --fl-linea: #bda292;
+}
+
+.contador__intro {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-sub);
+  font-weight: 300;
+  line-height: 1.35;
+  color: var(--tenue);
+  text-wrap: balance;
+}
+
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  width: 100%;
+}
+
+.cifra {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: .45rem;
+}
+
+/* Filete finísimo entre columnas, difuminado en las puntas */
+.cifra + .cifra::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14%;
+  bottom: 24%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(245, 236, 228, .2) 35%,
+    rgba(245, 236, 228, .2) 65%,
+    transparent
+  );
+}
+
+.cifra__n {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: var(--t-display);
+  line-height: .95;
+  letter-spacing: .01em;
+  color: var(--crema);
+  font-variant-numeric: lining-nums tabular-nums;
+  /* Entrada del dígito nuevo */
+  transition:
+    opacity   680ms var(--ease),
+    transform 680ms var(--ease);
+}
+
+/* Salida del dígito viejo: un poco más rápida que la entrada */
+.cifra__n.cambiando {
+  opacity: 0;
+  transform: translate3d(0, -.28em, 0);
+  transition-duration: 420ms;
+}
+
+.cifra__t {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--tenue);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   3 · Galería   ·   acento: verde tallo
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* El carrusel sangra a todo lo ancho, sin el margen de las demás secciones */
+.seccion.galeria { padding-inline: 0; }
+
+.galeria__todo {
+  width: 100%;
+  display: grid;
+  gap: clamp(1rem, 4vw, 1.6rem);
+  /* El carrusel sangra a todo lo ancho y no usa .seccion__caja, así que
+     el centrado hay que declararlo aquí o los textos de dos renglones
+     se alinean a la izquierda. */
+  text-align: center;
+}
+
+.galeria__cabeza {
+  display: grid;
+  justify-items: center;
+  gap: .3rem;
+  padding-inline: 1.25rem;
+}
+
+.galeria__titulo {
+  font-family: var(--serif);
+  font-size: var(--t-titulo);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: .02em;
+  color: var(--crema);
+}
+
+.galeria__sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  color: var(--tenue);
+  text-wrap: balance;
+}
+
+.galeria__pista {
+  /* El alto manda: la diapositiva nunca puede tapar el título, el pie
+     ni el botón de siguiente, ni en pantallas cortas */
+  --ancho-diapo: min(76vw, 330px, 38dvh);
+
+  display: flex;
+  gap: clamp(.7rem, 3vw, 1.1rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;      /* no arrastra la página al llegar al borde */
+  -webkit-overflow-scrolling: touch;   /* inercia nativa en iOS */
+  padding-block: .5rem;
+  /* Centra la primera y la última */
+  padding-inline: calc((100% - var(--ancho-diapo)) / 2);
+  scrollbar-width: none;
+}
+.galeria__pista::-webkit-scrollbar { display: none; }
+.galeria__pista:focus-visible { outline: 1px solid rgba(155, 171, 142, .5); outline-offset: 4px; }
+
+.diapo {
+  position: relative;
+  flex: 0 0 var(--ancho-diapo);
+  margin: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .5);
+  opacity: .38;
+  transform: scale(.93);
+  scroll-snap-align: center;
+  transition:
+    opacity   var(--dur-media) var(--ease),
+    transform var(--dur-media) var(--ease);
+}
+
+.diapo.centro { opacity: 1; transform: none; }
+
+/* Filete interior, para que la foto no flote sin marco */
+.diapo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(245, 236, 228, .16);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.diapo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.galeria__pie {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  padding-inline: 1.25rem;
+}
+
+/* Los dos textos cambian con el mismo fundido */
+.galeria__linea,
+.galeria__momento,
+.galeria__cuenta {
+  transition: opacity 560ms var(--ease), transform 560ms var(--ease);
+}
+.mudando {
+  opacity: 0;
+  transform: translate3d(0, .35rem, 0);
+  transition-duration: 380ms;
+}
+
+/* Línea propia de la foto. min-height reserva dos renglones
+   para que el contador de abajo no brinque al cambiar de texto. */
+.galeria__linea {
+  min-height: 2.5em;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-sub);
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--texto);
+  text-wrap: balance;
+}
+
+/* Etiqueta del momento + contador, un solo renglón */
+.galeria__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;          /* si la etiqueta es larga, el contador baja centrado */
+  gap: .2rem .7rem;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  line-height: 1.2;
+}
+
+.galeria__momento {
+  color: var(--verde-claro);
+  opacity: .8;
+}
+
+/* Punto de separación entre la etiqueta y el contador */
+.galeria__meta::before {
+  content: "";
+  order: 1;
+  width: 3px;
+  height: 3px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--tenue);
+  opacity: .5;
+  transition: opacity 560ms var(--ease);
+}
+.galeria__meta.sin-cuenta::before { opacity: 0; }
+
+/* Ya desvanecidos, se sacan del flujo para que la etiqueta quede centrada */
+.galeria__meta.sin-hueco { gap: 0; }
+.galeria__meta.sin-hueco::before,
+.galeria__meta.sin-hueco .galeria__cuenta { display: none; }
+
+.galeria__cuenta {
+  order: 2;
+  flex: none;
+  color: var(--tenue);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.galeria__cuenta #galeriaN { color: var(--crema); }
+.galeria__barra { margin-inline: .3em; opacity: .5; }
+
+/* Fuera del flujo: aparece bajo el pie y se va sin mover nada de sitio */
+.galeria__desliza {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: .55rem;
+  text-align: center;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  text-indent: .32em;
+  color: var(--verde-claro);
+  opacity: .55;
+  transition: opacity var(--dur-larga) var(--ease);
+}
+.galeria__desliza.se-fue,
+.galeria__cuenta.se-fue { opacity: 0; }
+
+/* ── Tarjeta de cierre del carrusel ─────────────────────────────────────── */
+.diapo--cierre {
+  background: linear-gradient(160deg, var(--bg-3), var(--bg-2) 65%);
+  box-shadow: none;
+}
+.diapo--cierre::after { border-style: dashed; border-color: rgba(245, 236, 228, .2); }
+
+/* Ojo: se llama "ultima" y no "cierre" porque la sección 7 ya usa ese
+   nombre, y su `height: 100%` se colaba en la sección entera. */
+.ultima {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .85rem;
+  padding: clamp(1.2rem, 6%, 2rem);
+  text-align: center;
+}
+
+.ultima__flor {
+  width: clamp(38px, 20%, 54px);
+  height: auto;
+  opacity: .85;
+  --fl-crema: #e9dcd3;
+  --fl-vena: #cbb2a4;
+  --fl-tallo: #7d8f73;
+}
+
+.ultima__titulo {
+  font-family: var(--serif);
+  font-size: var(--t-sub);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+.ultima__raya {
+  width: 28px;
+  height: 1px;
+  background: var(--rojo);
+  opacity: .55;
+}
+
+.ultima__texto {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  line-height: 1.4;
+  color: var(--tenue);
+  text-wrap: balance;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   4 · La canción   ·   acento: rojo gerbera
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cancion__petalos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cancion__caja {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: clamp(.5rem, 2vw, .75rem);
+}
+
+.cancion__sobre {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  color: var(--tenue);
+}
+
+.cancion__titulo {
+  font-family: var(--serif);
+  font-size: var(--t-titulo);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+.cancion__artista {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  color: var(--rojo);
+  opacity: .9;
+}
+
+/* Marco del video: guarda el hueco antes de que exista el iframe */
+.cancion__marco {
+  position: relative;
+  width: 100%;
+  margin-top: clamp(.75rem, 3vw, 1.25rem);
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(245, 236, 228, .13);
+  border-radius: 4px;
+  background: linear-gradient(150deg, var(--bg-3), var(--bg-2) 70%);
+  overflow: hidden;
+}
+
+.cancion__video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ── Botón de play ──────────────────────────────────────────────────────── */
+.play {
+  position: relative;
+  width: clamp(66px, 20vw, 84px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--crema);
+  background: rgba(194, 56, 74, .16);
+  box-shadow: inset 0 0 0 1px rgba(194, 56, 74, .5);
+  transition:
+    transform var(--dur-corta) var(--ease),
+    opacity   var(--dur-media) var(--ease),
+    background var(--dur-corta) var(--ease);
+}
+
+.play__ic {
+  width: 38%;
+  height: 38%;
+  /* Sin margen: el triángulo ya está dibujado con su centroide en el centro
+     del viewBox (9.2→18, centroide en 12.13 de 24). Correrlo además lo
+     descuadra hacia la derecha. */
+}
+
+/* Halo lento: es una señal de "tócame", no un parpadeo */
+.play__halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(194, 56, 74, .45);
+  animation: halo 3.6s var(--ease-suave) infinite;
+}
+
+@keyframes halo {
+  0%        { transform: scale(1);    opacity: .6; }
+  70%, 100% { transform: scale(1.55); opacity: 0; }
+}
+
+.play:active { transform: scale(.94); background: rgba(194, 56, 74, .26); }
+
+/* Al tocar, el botón se va antes de que entre el video */
+.cancion.sonando .play {
+  opacity: 0;
+  transform: scale(.82);
+  pointer-events: none;
+}
+
+.cancion__pista {
+  margin-top: .35rem;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  text-indent: .32em;
+  color: var(--tenue);
+  transition: opacity var(--dur-larga) var(--ease);
+}
+.cancion.sonando .cancion__pista { opacity: 0; }
+
+/* ── La nota, ya sonando ────────────────────────────────────────────────── */
+/* De 0fr a 1fr: la caja crece sola y la sección se recentra sin brincos */
+.cancion__nota {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 900ms var(--ease-suave),
+    opacity            var(--dur-media) var(--ease);
+}
+.cancion.sonando .cancion__nota {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.cancion__nota-caja {
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+}
+
+.cancion__nota-linea {
+  max-width: 30ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-cuerpo);
+  line-height: 1.5;
+  color: var(--texto);
+  text-wrap: balance;
+  opacity: 0;
+  transform: translate3d(0, .5rem, 0);
+  transition:
+    opacity   var(--dur-larga) var(--ease) var(--retraso),
+    transform var(--dur-larga) var(--ease) var(--retraso);
+}
+.cancion__nota-linea:nth-of-type(1) { --retraso: 620ms; }
+.cancion__nota-linea:nth-of-type(2) { --retraso: 900ms; }
+
+.cancion.sonando .cancion__nota-linea { opacity: 1; transform: none; }
+
+/* El aviso de que la canción no se corta al avanzar. Llega al final,
+   cuando ya se acomodó en la canción. */
+.cancion__sigue {
+  margin-top: .5rem;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--rojo);
+  opacity: 0;
+  transition: opacity 1200ms var(--ease) 2400ms;
+}
+.cancion.sonando .cancion__sigue { opacity: .78; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5 · La carta   ·   acento: blanco crema
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.carta__caja { text-align: left; }
+
+/* ── La hoja de papel ───────────────────────────────────────────────────── */
+.hoja {
+  position: relative;
+  padding: clamp(1.4rem, 6.5vw, 2.6rem) clamp(1.3rem, 6vw, 2.4rem);
+  border-radius: 2px;
+  /* El papel no es plano: la luz le entra por arriba a la izquierda */
+  background:
+    linear-gradient(168deg, #f8f1e8 0%, #f2e7da 55%, #ece0d1 100%);
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, .55),
+    0 6px 16px rgba(0, 0, 0, .35),
+    inset 0 1px 0 rgba(255, 255, 255, .6);
+  overflow: hidden;
+}
+
+/* Grano del papel: finísimo, solo para que no se lea como un plano digital */
+.hoja::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(52deg,
+      rgba(120, 80, 60, .022) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(-38deg,
+      rgba(120, 80, 60, .018) 0 1px, transparent 1px 4px);
+}
+
+/* Sombra de los bordes, como el papel real donde se curva hacia la mesa */
+.hoja::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 22px rgba(120, 74, 56, .13);
+}
+
+/* La hoja entra como si la pusieran sobre la mesa */
+.hoja[data-revelar]         { transform: translate3d(0, 2rem, 0) scale(.985); }
+.hoja[data-revelar].visible { transform: none; }
+
+/* La marca del doblez: este papel venía dentro del sobre de la portada */
+.hoja__doblez {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 26px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  /* Muy suave: un pliegue, no una costura */
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(122, 78, 58, .045) 44%,
+    rgba(122, 78, 58, .065) 50%,
+    rgba(255, 255, 255, .34) 56%,
+    transparent 100%
+  );
+}
+
+.hoja__texto {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(.7rem, 2.9vw, 1.15rem);
+}
+
+/* ── La tinta ───────────────────────────────────────────────────────────── */
+.carta__saludo {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.35rem, 1.15rem + .8vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #3f151b;
+}
+
+.carta__parrafo {
+  font-family: var(--serif);
+  font-size: clamp(1.02rem, .95rem + .45vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.72;
+  color: #4b2327;
+  text-wrap: pretty;        /* evita renglones huérfanos al final */
+}
+
+.carta__filete {
+  width: 100%;
+  margin-block: clamp(.2rem, 1.5vw, .6rem);
+}
+/* Sobre papel, el filete tiene que ser tinta, no luz */
+.carta__filete .filete__linea {
+  background: linear-gradient(to right,
+    transparent, rgba(120, 62, 52, .32), transparent);
+}
+/* Más grande y con más tinta: a 17px sobre papel claro se perdía */
+.carta__filete .filete__flor {
+  width: 23px;
+  height: 23px;
+  opacity: 1;
+  --fl-crema: #e3cfbb;
+  --fl-crema-2: #d3b9a1;
+  --fl-linea: #8d6047;
+}
+
+.carta__firma {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 1.05rem + .6vw, 1.6rem);
+  font-weight: 400;
+  color: #3f151b;
+  text-align: right;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   6 · Cosas que me gustan de ti   ·   acento: rojo gerbera (solo al voltear)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.gustos__caja {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1rem, 4vw, 1.5rem);
+}
+
+.gustos__titulo {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 1.3rem + 1.1vw, 2.4rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+.gustos__sub {
+  margin-top: -.35rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  color: var(--tenue);
+}
+
+.gustos__rejilla {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(.6rem, 3vw, .9rem);
+  perspective: 1400px;          /* para la entrada inclinada de las celdas */
+}
+
+.gustos__rejilla > li { display: grid; }
+
+/* Entran inclinadas hacia atrás y se enderezan: no solo suben */
+.gustos__rejilla > li[data-revelar] {
+  transform: translate3d(0, 1.5rem, 0) rotateX(11deg) scale(.965);
+}
+.gustos__rejilla > li[data-revelar].visible { transform: none; }
+
+/* ── La tarjeta ─────────────────────────────────────────────────────────── */
+.gusto {
+  width: 100%;
+  aspect-ratio: 1 / .95;
+  perspective: 1000px;
+}
+
+.gusto__giro {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 800ms var(--ease-suave);
+}
+.gusto[aria-expanded="true"] .gusto__giro { transform: rotateY(180deg); }
+
+/* La tarjeta se despega de la mesa para voltearse y se vuelve a posar */
+@keyframes alzar {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.055); }
+}
+.gusto.girando { animation: alzar 820ms var(--ease-suave); }
+
+.gusto__cara {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .5rem;
+  padding: clamp(.85rem, 8%, 1.35rem);
+  border-radius: 3px;
+  text-align: center;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Marco interior finísimo, como el de una tarjeta impresa */
+.gusto__cara::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(245, 236, 228, .09);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Frente: oscuro y sobrio. Todo el color está guardado para el reverso. */
+.gusto__cara--frente {
+  background:
+    radial-gradient(115% 95% at 22% 6%, rgba(245, 236, 228, .075), transparent 58%),
+    linear-gradient(158deg, #32191f 0%, #26141a 55%, #1e1015 100%);
+  border: 1px solid rgba(245, 236, 228, .14);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, .48),
+    inset 0 1px 0 rgba(255, 255, 255, .055);
+}
+
+/* Filigrana: la misma flor, enorme y casi invisible, como impresa en el papel */
+.gusto__marca {
+  position: absolute;
+  /* Sangra por la esquina inferior derecha: así no compite con la flor
+     chica ni con el título, y el recorte del marco la vuelve un motivo */
+  left: 74%;
+  top: 78%;
+  width: 118%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  pointer-events: none;
+  opacity: .07;
+  /* En silueta: todas las partes del mismo tono */
+  --fl-rojo: #f5ece4;      --fl-rojo-hondo: #f5ece4;  --fl-centro: #f5ece4;
+  --fl-crema: #f5ece4;     --fl-crema-2: #f5ece4;     --fl-linea: #f5ece4;
+  --fl-vena: #f5ece4;      --fl-tallo: #f5ece4;
+}
+.gusto__marca svg { width: 100%; height: 100%; display: block; }
+.gusto__cara--atras .gusto__marca { opacity: .085; }
+
+/* Numeración: le da orden de colección */
+.gusto__num {
+  position: absolute;
+  top: .55rem;
+  left: .7rem;
+  font-family: var(--serif);
+  font-size: .66rem;
+  letter-spacing: .16em;
+  line-height: 1;
+  color: var(--tenue);
+  opacity: .55;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.gusto__cara--atras .gusto__num { color: #f0d9d3; opacity: .5; }
+
+.gusto__flor {
+  position: relative;
+  width: clamp(24px, 21%, 38px);
+  aspect-ratio: 1;
+  /* Apagadas: el rojo aparece hasta que se voltea la tarjeta */
+  --fl-rojo: rgba(245, 236, 228, .46);
+  --fl-rojo-hondo: rgba(245, 236, 228, .27);
+  --fl-centro: rgba(245, 236, 228, .18);
+  --fl-crema: rgba(245, 236, 228, .5);
+  --fl-crema-2: rgba(245, 236, 228, .3);
+  --fl-linea: rgba(245, 236, 228, .34);
+  --fl-vena: rgba(245, 236, 228, .3);
+  --fl-tallo: rgba(155, 171, 142, .42);
+}
+.gusto__flor svg { width: 100%; height: 100%; display: block; }
+
+.gusto__titulo {
+  position: relative;
+  font-family: var(--serif);
+  font-size: clamp(1rem, .92rem + .42vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: .012em;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+/* Un hilo de rojo en el frente: el único aviso de lo que hay del otro lado */
+.gusto__raya {
+  position: relative;
+  width: 22px;
+  height: 1px;
+  background: var(--rojo);
+  opacity: .5;
+  transition: width var(--dur-media) var(--ease), opacity var(--dur-media) var(--ease);
+}
+.gusto:active .gusto__raya { width: 40px; opacity: .85; }
+
+/* Reverso: aquí sí, rojo gerbera */
+.gusto__cara--atras {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(115% 95% at 20% 5%, rgba(255, 255, 255, .16), transparent 60%),
+    linear-gradient(158deg, #9c2434 0%, #7d1a2b 52%, #641324 100%);
+  border: 1px solid rgba(245, 236, 228, .22);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, .5),
+    inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+.gusto__cara--atras::before { border-color: rgba(245, 236, 228, .17); }
+
+.gusto__texto {
+  position: relative;
+  font-family: var(--serif);
+  font-size: clamp(.85rem, .78rem + .32vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #fbf4ee;
+  text-wrap: pretty;
+}
+
+.gustos__pista {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  text-indent: .32em;
+  color: var(--tenue);
+  transition: opacity var(--dur-larga) var(--ease);
+}
+.gustos__pista.se-fue { opacity: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   7 · Cierre   ·   acento: rojo gerbera
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cierre__caja {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1rem, 4vw, 1.6rem);
+}
+
+/* ── La gerbera que se abre ─────────────────────────────────────────────── */
+.cierre__flor {
+  width: clamp(118px, 36vw, 200px);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+}
+
+.petalo-g {
+  transform-box: fill-box;
+  /* El origen es la base del pétalo, que cae justo en el centro de la flor */
+  transform-origin: 50% 100%;
+  transform: rotate(var(--giro)) scale(.55, .04);
+  opacity: 0;
+  transition:
+    transform 1000ms var(--ease-suave) var(--retraso),
+    opacity    520ms var(--ease)       var(--retraso);
+}
+.cierre__flor.abierta .petalo-g {
+  transform: rotate(var(--giro)) scale(1);
+  opacity: 1;
+}
+
+.petalo-g--fuera  { fill: var(--rojo); }
+.petalo-g--dentro { fill: var(--rojo-hondo); }
+
+.cierre__ojo,
+.cierre__anillo {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 800ms var(--ease-suave) var(--retraso),
+    opacity   420ms var(--ease)       var(--retraso);
+}
+.cierre__flor.abierta .cierre__ojo,
+.cierre__flor.abierta .cierre__anillo { transform: scale(1); opacity: 1; }
+
+.cierre__ojo { fill: #5c1220; }
+.cierre__anillo {
+  fill: none;
+  stroke: var(--rojo);
+  stroke-width: 1.6;
+  stroke-dasharray: 1.2 2.6;
+  stroke-linecap: round;
+}
+
+.cierre__sobre {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  color: var(--tenue);
+}
+
+.cierre__filete { width: min(100%, 13rem); }
+
+.cierre__final {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 1.6rem + 2vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.18;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+/* ── Escalado a tablet / iPad ───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  :root { --ancho-caja: min(100% - 5rem, 40rem); }
+
+  .progreso { right: calc(env(safe-area-inset-right) + 1.6rem); gap: .7rem; }
+  .siguiente { width: 54px; height: 54px; margin-left: -27px; bottom: 2.4rem; }
+  .siguiente__ic { width: 24px; height: 24px; }
+
+  .ornamento--ti { top: 2.6rem; left: 2.6rem; }
+  .ornamento--id { bottom: 2.6rem; right: 2.6rem; }
+
+  /* En tablet se asoman las fotos vecinas: el carrusel se lee como carrusel */
+  .galeria__pista { --ancho-diapo: min(46vw, 420px, 42dvh); }
+
+  /* Las 6 tarjetas pasan a 3 × 2: aprovechan el ancho sin estirarse */
+  .gustos__rejilla { grid-template-columns: repeat(3, 1fr); }
+
+  .sobre { width: min(58vw, 430px); }
+  .tarjeta__flor { width: 32px; height: 32px; }
+  .tarjeta__mes  { font-size: .68rem; }
+  .tarjeta__fecha { font-size: 1rem; }
+}
+
+@media (min-width: 768px) and (orientation: landscape) {
+  .seccion { padding-block: 2.5rem 4.5rem; }
+}
+
+/* ── Movimiento reducido ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-corta: 1ms;
+    --dur-media: 1ms;
+    --dur-larga: 1ms;
+  }
+
+  .fondo { display: none; }
+
+  .siguiente { animation: none; }
+
+  .deck__pista { transition: transform 1ms linear; }
+
+  [data-revelar] {
+    transform: none;
+    transition: opacity 220ms var(--ease) var(--retraso, 0ms);
+  }
+
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 220ms !important;
+  }
+}
