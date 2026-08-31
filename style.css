@@ -1441,7 +1441,9 @@ img { display: block; max-width: 100%; }
   .ornamento--id { bottom: 2.6rem; right: 2.6rem; }
 
   /* En tablet se asoman las fotos vecinas: el carrusel se lee como carrusel */
-  .galeria__pista { --ancho-diapo: min(46vw, 420px, 42dvh); }
+  /* 38dvh y no 42: a 42 el contenido medía 557px contra 556 disponibles en
+     una laptop de ~700px de alto, y el pie se metía debajo del botón */
+  .galeria__pista { --ancho-diapo: min(46vw, 420px, 38dvh); }
 
   /* Las 6 tarjetas pasan a 3 × 2: aprovechan el ancho sin estirarse */
   .gustos__rejilla { grid-template-columns: repeat(3, 1fr); }
