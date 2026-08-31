@@ -344,9 +344,20 @@
     const sobre   = $('#sobre');
     const fecha   = $('#portadaFecha');
 
-    fecha.textContent = FECHA_INICIO.toLocaleDateString('es-MX', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    });
+    /* El rango del mes, calculado desde FECHA_INICIO para que siga cuadrando
+       si alguna vez se cambia la constante. El año solo se escribe una vez
+       cuando las dos fechas caen en el mismo año. */
+    const cumple = new Date(FECHA_INICIO);
+    cumple.setMonth(cumple.getMonth() + 1);
+
+    const mismoAno = cumple.getFullYear() === FECHA_INICIO.getFullYear();
+    const desde = FECHA_INICIO.toLocaleDateString('es-MX',
+      mismoAno ? { day: 'numeric', month: 'long' }
+               : { day: 'numeric', month: 'long', year: 'numeric' });
+    const hasta = cumple.toLocaleDateString('es-MX',
+      { day: 'numeric', month: 'long', year: 'numeric' });
+
+    fecha.textContent = `${desde} — ${hasta}`;
 
     /* El botón de siguiente no aparece hasta que el sobre está abierto */
     btnSig.classList.add('esta-fuera');

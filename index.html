@@ -223,13 +223,19 @@
 
             <!-- la tarjeta que sale del sobre -->
             <span class="tarjeta" id="tarjeta">
-              <svg class="tarjeta__flor" viewBox="0 0 100 100" aria-hidden="true">
-                <use href="#fl-gerbera"/>
-              </svg>
               <span class="tarjeta__nombre" data-linea>Vania</span>
-              <span class="tarjeta__rayita" data-linea></span>
-              <span class="tarjeta__mes" data-linea>1 mes</span>
+
+              <span class="filete tarjeta__filete" data-linea aria-hidden="true">
+                <span class="filete__linea"></span>
+                <svg class="filete__flor" viewBox="0 0 100 100"><use href="#fl-gerbera"/></svg>
+                <span class="filete__linea"></span>
+              </span>
+
+              <span class="tarjeta__mes" data-linea>nuestro primer mes</span>
+              <!-- El rango completo, no una fecha suelta: es lo que hace
+                   entendible de qué mes se está hablando -->
               <span class="tarjeta__fecha" data-linea id="portadaFecha"></span>
+              <span class="tarjeta__firma" data-linea>de Ivan</span>
             </span>
 
             <!-- cuerpo del sobre, por delante de la tarjeta -->

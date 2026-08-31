@@ -331,7 +331,7 @@ img { display: block; max-width: 100%; }
 .sobre {
   position: relative;
   display: block;
-  width: min(74vw, 302px);
+  width: min(84vw, 320px);
   aspect-ratio: 3 / 2;
   opacity: 0;
   transform: translate3d(0, 2.2rem, 0) scale(.955);
@@ -417,17 +417,23 @@ img { display: block; max-width: 100%; }
   left: 50%;
   top: 50%;
   z-index: 1;
-  width: 89%;
-  height: 87%;
+  width: 91%;
+  height: 94%;   /* sigue oculta detrás del bolsillo cuando el sobre está cerrado */
   transform: translate(-50%, -50%);
   transition: transform 1150ms var(--ease-suave);
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: .5rem;
-  padding: 1rem;
+  gap: .38rem;
+  gap: 2.3cqw;
+  padding: .85rem;
+  padding: 5.2cqw;
   border-radius: 3px;
   background: linear-gradient(#f8f1ea, #eee1d7);
+  /* La tipografía de adentro se mide contra la tarjeta, no contra la
+     pantalla: así encoge con ella y nunca se desborda en un celular
+     angosto. Cada regla lleva su respaldo en rem por si no hay cqw. */
+  container-type: inline-size;
   box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
   text-align: center;
 }
@@ -441,35 +447,60 @@ img { display: block; max-width: 100%; }
   transform: translate(-50%, -50%) scale(1.2);
 }
 
-.tarjeta__flor  { width: 26px; height: 26px; }
+/* La gerbera de la tarjeta vive en el filete: no hacen falta dos. */
+
 .tarjeta__nombre {
   font-family: var(--serif);
-  font-size: clamp(2rem, 8.5vw, 2.6rem);
+  font-size: clamp(1.8rem, 7.6vw, 2.4rem);
+  font-size: 10cqw;
   font-weight: 300;
   line-height: 1;
   letter-spacing: .05em;
   color: #4a121c;
 }
-.tarjeta__rayita {
-  width: 34px;
-  height: 1px;
-  background: var(--rojo);
-  opacity: .5;
+
+.tarjeta__filete { width: 66%; margin-block: .35rem; }
+.tarjeta__filete .filete__linea {
+  background: linear-gradient(to right,
+    transparent, rgba(120, 62, 52, .34), transparent);
 }
+.tarjeta__filete .filete__flor {
+  width: 13px;  height: 13px;
+  width: 5.6cqw; height: 5.6cqw;
+  opacity: .95;
+}
+
+/* La línea que le da sentido a todo lo demás */
 .tarjeta__mes {
-  font-family: var(--sans);
-  font-size: .58rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: .34em;
-  text-indent: .34em;
-  color: #96605a;
-}
-.tarjeta__fecha {
   font-family: var(--serif);
   font-style: italic;
-  font-size: .82rem;
-  color: #7d4a48;
+  font-size: clamp(.92rem, 3.7vw, 1.15rem);
+  font-size: 5.7cqw;
+  line-height: 1.2;
+  color: #6b2529;
+}
+
+/* El rango completo: "1 de agosto — 1 de septiembre". Una fecha suelta
+   debajo de "un mes" no se entiende; el rango se explica solo. */
+.tarjeta__fecha {
+  font-family: var(--sans);
+  font-size: .54rem;
+  font-size: 3.3cqw;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .17em;
+  text-indent: .17em;
+  line-height: 1.3;
+  color: #9c665f;
+}
+
+.tarjeta__firma {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .8rem;
+  font-size: 5cqw;
+  line-height: 1.15;   /* si no, hereda el 1.65 del cuerpo y se come 6px */
+  color: #8a5350;
 }
 
 /* Las líneas de la tarjeta aparecen ya que se asentó */
@@ -482,9 +513,10 @@ img { display: block; max-width: 100%; }
 }
 .sobre.abierto .tarjeta [data-linea] { opacity: 1; transform: none; }
 .tarjeta__nombre { --retraso: 520ms; }
-.tarjeta__rayita { --retraso: 660ms; }
-.tarjeta__mes    { --retraso: 790ms; }
-.tarjeta__fecha  { --retraso: 910ms; }
+.tarjeta__filete { --retraso: 680ms; }
+.tarjeta__mes    { --retraso: 810ms; }
+.tarjeta__fecha  { --retraso: 930ms; }
+.tarjeta__firma  { --retraso: 1050ms; }
 
 /* Pista "toca para abrir" */
 .portada__pista {
@@ -1485,9 +1517,8 @@ img { display: block; max-width: 100%; }
   .gustos__rejilla { grid-template-columns: repeat(3, 1fr); }
 
   .sobre { width: min(58vw, 430px); }
-  .tarjeta__flor { width: 32px; height: 32px; }
-  .tarjeta__mes  { font-size: .68rem; }
-  .tarjeta__fecha { font-size: 1rem; }
+  .tarjeta__fecha { font-size: .66rem; }
+  .tarjeta__firma { font-size: .98rem; }
 }
 
 @media (min-width: 768px) and (orientation: landscape) {
