@@ -62,10 +62,12 @@ Transición suave entre secciones.
 1. **Portada** — Sobre cerrado que se abre al tocar. Revela "Vania · 1 mes" y la fecha.
    Entrada elegante, sin apuro.
 2. **Contador en vivo** — Días, horas, minutos juntos. Inicio: **1 de agosto de 2026**.
-3. **Galería** — Fotos de `/img` en carrusel horizontal con `scroll-snap`,
+3. **La canción** — Play grande → inyecta iframe de YouTube ("Te quiero tanto",
+   Kevin Kaarl). Mientras suena, pétalos cayendo. **Va aquí a propósito, no
+   más abajo:** la canción sigue sonando al avanzar, así que puesta en tercer
+   lugar acompaña la galería, la carta, las tarjetas y el cierre.
+4. **Galería** — Fotos de `/img` en carrusel horizontal con `scroll-snap`,
    inercia táctil natural.
-4. **La canción** — Play grande → inyecta iframe de YouTube ("Te quiero tanto",
-   Kevin Kaarl). Mientras suena, pétalos cayendo.
 5. **La carta** — Texto fijo, línea por línea con fade.
 6. **Cosas que me gustan de ti** — 6 tarjetas que se voltean al tocar.
 7. **Cierre** — Cuenta regresiva a la próxima vez que se vean.
@@ -159,6 +161,10 @@ no mete verde también.
   del carril.
 - **Los cambios de texto con fundido necesitan memoria del destino.** Comparar
   contra el texto en pantalla hace que se salten cambios al pasar fotos rápido.
+- **Una pista de 10px en mayúsculas debajo de un bloque no la ve nadie.**
+  La instrucción de que las tarjetas se voltean estaba ahí y pasaba
+  desapercibida en celular. Va arriba, en serif, con ícono — y sobre todo,
+  la primera tarjeta se asoma sola: el movimiento explica mejor que el texto.
 - **Ocultar con `opacity: 0` no libera el espacio.** Si un elemento oculto
   sigue en el flujo, descentra a sus vecinos (pasó con el contador de la
   galería en la tarjeta de cierre).

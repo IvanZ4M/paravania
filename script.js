@@ -423,7 +423,53 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════════
-     3 · Galería
+     3 · La canción
+     El iframe NO existe hasta que se toca el botón: los navegadores móviles
+     bloquean el autoplay si no nace de un gesto del usuario, y además así no
+     se descarga nada de YouTube para quien nunca le da play.
+     ════════════════════════════════════════════════════════════════════════ */
+
+  function initCancion() {
+    const seccion = $('#s-cancion');
+    const marco   = $('#cancionMarco');
+    const boton   = $('#cancionPlay');
+    const capa    = $('#cancionPetalos');
+
+    boton.addEventListener('click', () => {
+      if (seccion.classList.contains('sonando')) return;
+      seccion.classList.add('sonando');
+
+      const parametros = new URLSearchParams({
+        autoplay: '1',        /* permitido: venimos de un tap */
+        playsinline: '1',     /* en iOS, que no salte a pantalla completa */
+        rel: '0',
+        modestbranding: '1'
+      });
+
+      const video = document.createElement('iframe');
+      video.className = 'cancion__video';
+      video.src = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?${parametros}`;
+      video.title = 'Te quiero tanto — Kevin Kaarl';
+      video.allow = 'autoplay; encrypted-media; picture-in-picture';
+      video.setAttribute('allowfullscreen', '');
+
+      /* Se deja salir al botón antes de meter el video */
+      const meter = () => {
+        boton.remove();
+        marco.appendChild(video);
+      };
+      menosMovimiento.matches ? meter() : setTimeout(meter, 380);
+
+      /* Pétalos densos, encima de los del fondo */
+      sembrarPetalos(capa, window.innerWidth < 600 ? 14 : 20, {
+        opacidad: [.10, .24],
+        escala: 1.2
+      });
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     4 · Galería
      ════════════════════════════════════════════════════════════════════════ */
 
   function initGaleria() {
@@ -605,52 +651,6 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════════
-     4 · La canción
-     El iframe NO existe hasta que se toca el botón: los navegadores móviles
-     bloquean el autoplay si no nace de un gesto del usuario, y además así no
-     se descarga nada de YouTube para quien nunca le da play.
-     ════════════════════════════════════════════════════════════════════════ */
-
-  function initCancion() {
-    const seccion = $('#s-cancion');
-    const marco   = $('#cancionMarco');
-    const boton   = $('#cancionPlay');
-    const capa    = $('#cancionPetalos');
-
-    boton.addEventListener('click', () => {
-      if (seccion.classList.contains('sonando')) return;
-      seccion.classList.add('sonando');
-
-      const parametros = new URLSearchParams({
-        autoplay: '1',        /* permitido: venimos de un tap */
-        playsinline: '1',     /* en iOS, que no salte a pantalla completa */
-        rel: '0',
-        modestbranding: '1'
-      });
-
-      const video = document.createElement('iframe');
-      video.className = 'cancion__video';
-      video.src = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?${parametros}`;
-      video.title = 'Te quiero tanto — Kevin Kaarl';
-      video.allow = 'autoplay; encrypted-media; picture-in-picture';
-      video.setAttribute('allowfullscreen', '');
-
-      /* Se deja salir al botón antes de meter el video */
-      const meter = () => {
-        boton.remove();
-        marco.appendChild(video);
-      };
-      menosMovimiento.matches ? meter() : setTimeout(meter, 380);
-
-      /* Pétalos densos, encima de los del fondo */
-      sembrarPetalos(capa, window.innerWidth < 600 ? 14 : 20, {
-        opacidad: [.10, .24],
-        escala: 1.2
-      });
-    });
-  }
-
-  /* ════════════════════════════════════════════════════════════════════════
      5 · La carta
      Los bloques aparecen a ritmo de lectura, no a ritmo de decoración: 460 ms
      entre uno y otro en vez de los 80–120 ms del resto de la página.
@@ -684,6 +684,9 @@
             <span class="gusto__cara gusto__cara--frente">
               <span class="gusto__marca" aria-hidden="true">${flor}</span>
               <span class="gusto__num" aria-hidden="true">${n}</span>
+              <span class="gusto__voltear" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><use href="#ic-voltear"/></svg>
+              </span>
               <span class="gusto__flor" aria-hidden="true">${flor}</span>
               <span class="gusto__titulo">${g.titulo}</span>
               <span class="gusto__raya" aria-hidden="true"></span>
@@ -705,9 +708,25 @@
     escalonar(celdas, 90, 220);
     observar(rejilla);
 
+    /* Al llegar a la sección, la primera tarjeta se asoma: gira un poco y
+       regresa. Es la señal más clara de que son objetos que se voltean,
+       mucho más que cualquier texto. Pasa una sola vez. */
+    let yaSeAsomo = false;
+    seccion.addEventListener('seccion:entra', () => {
+      if (yaSeAsomo || menosMovimiento.matches) return;
+      yaSeAsomo = true;
+      const primera = $('.gusto', rejilla);
+      setTimeout(() => {
+        primera.classList.add('asoma');
+        setTimeout(() => primera.classList.remove('asoma'), 1800);
+      }, 1000);
+    });
+
     seccion.addEventListener('click', (e) => {
       const tarjeta = e.target.closest('.gusto');
       if (!tarjeta) return;
+
+      tarjeta.classList.remove('asoma');   /* que no pelee con el giro real */
 
       const abierta = tarjeta.getAttribute('aria-expanded') === 'true';
       tarjeta.setAttribute('aria-expanded', String(!abierta));
@@ -819,8 +838,8 @@
     initObservador();
     initPortada();
     initContador();
-    initGaleria();
     initCancion();
+    initGaleria();
     initCarta();
     initGustos();
     initCierre();

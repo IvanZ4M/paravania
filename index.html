@@ -176,6 +176,17 @@
     </g>
   </symbol>
 
+  <!-- ── Flechas de "voltear": la señal de que la tarjeta gira ──────── -->
+  <symbol id="ic-voltear" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7"
+       stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.6 9.4A8.6 8.6 0 0 1 18 6.1"/>
+      <path d="M20.4 14.6A8.6 8.6 0 0 1 6 17.9"/>
+      <path d="M18.4 2.2v4h-4"/>
+      <path d="M5.6 21.8v-4h4"/>
+    </g>
+  </symbol>
+
   <!-- ── Chevron de "siguiente" ────────────────────────────────────────── -->
   <symbol id="ic-abajo" viewBox="0 0 24 24">
     <path d="M5 9 L12 16 L19 9" fill="none" stroke="currentColor" stroke-width="1.4"
@@ -284,41 +295,7 @@
       </div>
     </section>
 
-    <!-- ── 3 · Galería ──────────────────────────────────────────────── -->
-    <section class="seccion galeria" id="s-galeria" aria-label="Galería">
-      <div class="ornamentos" aria-hidden="true">
-        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
-        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
-      </div>
-
-      <div class="galeria__todo">
-        <header class="galeria__cabeza">
-          <h2 class="galeria__titulo" data-revelar>Un mes en fotos</h2>
-          <p class="galeria__sub" data-revelar>todo lo que cabe en un mes</p>
-        </header>
-
-        <!-- data-scroll-h: le dice al motor de gestos que aquí manda el dedo -->
-        <div class="galeria__pista" id="galeriaPista" data-scroll-h
-             tabindex="0" role="group" aria-label="Nuestras fotos"></div>
-
-        <div class="galeria__pie">
-          <!-- Línea propia de cada foto -->
-          <p class="galeria__linea" id="galeriaLinea">veniste riéndote todo el camino</p>
-          <!-- Etiqueta del momento + contador, en un solo renglón -->
-          <p class="galeria__meta">
-            <span class="galeria__momento" id="galeriaMomento">las primeras flores</span>
-            <span class="galeria__cuenta" id="galeriaCuenta">
-              <span id="galeriaN">01</span>
-              <span class="galeria__barra">/</span>
-              <span id="galeriaTotal">22</span>
-            </span>
-          </p>
-          <p class="galeria__desliza" id="galeriaDesliza">desliza</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── 4 · La canción ───────────────────────────────────────────── -->
+    <!-- ── 3 · La canción ───────────────────────────────────────────── -->
     <section class="seccion cancion" id="s-cancion" aria-label="La canción">
       <div class="ornamentos" aria-hidden="true">
         <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
@@ -370,6 +347,40 @@
       </div>
     </section>
 
+    <!-- ── 4 · Galería ──────────────────────────────────────────────── -->
+    <section class="seccion galeria" id="s-galeria" aria-label="Galería">
+      <div class="ornamentos" aria-hidden="true">
+        <svg class="ornamento ornamento--ti" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+        <svg class="ornamento ornamento--id" viewBox="0 0 60 60"><use href="#fl-ornamento"/></svg>
+      </div>
+
+      <div class="galeria__todo">
+        <header class="galeria__cabeza">
+          <h2 class="galeria__titulo" data-revelar>Un mes en fotos</h2>
+          <p class="galeria__sub" data-revelar>todo lo que cabe en un mes</p>
+        </header>
+
+        <!-- data-scroll-h: le dice al motor de gestos que aquí manda el dedo -->
+        <div class="galeria__pista" id="galeriaPista" data-scroll-h
+             tabindex="0" role="group" aria-label="Nuestras fotos"></div>
+
+        <div class="galeria__pie">
+          <!-- Línea propia de cada foto -->
+          <p class="galeria__linea" id="galeriaLinea">veniste riéndote todo el camino</p>
+          <!-- Etiqueta del momento + contador, en un solo renglón -->
+          <p class="galeria__meta">
+            <span class="galeria__momento" id="galeriaMomento">las primeras flores</span>
+            <span class="galeria__cuenta" id="galeriaCuenta">
+              <span id="galeriaN">01</span>
+              <span class="galeria__barra">/</span>
+              <span id="galeriaTotal">22</span>
+            </span>
+          </p>
+          <p class="galeria__desliza" id="galeriaDesliza">desliza</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ── 5 · La carta ─────────────────────────────────────────────── -->
     <!-- Texto literal de Ivan. No se reescribe ni se le corrigen las comas. -->
     <section class="seccion carta" id="s-carta" aria-label="La carta">
@@ -417,9 +428,16 @@
         <h2 class="gustos__titulo" data-revelar>Cosas que me gustan de ti</h2>
         <p class="gustos__sub" data-revelar>seis, de muchas</p>
 
-        <ul class="gustos__rejilla" id="gustosRejilla"></ul>
+        <!-- La instrucción va ARRIBA de la rejilla: abajo y en minúsculas
+             de 10px nadie la ve, y sin ella no se entiende que giran -->
+        <p class="gustos__pista" id="gustosPista" data-revelar>
+          <svg class="gustos__pista-ic" viewBox="0 0 24 24" aria-hidden="true">
+            <use href="#ic-voltear"/>
+          </svg>
+          toca cada tarjeta
+        </p>
 
-        <p class="gustos__pista" id="gustosPista">tócalas</p>
+        <ul class="gustos__rejilla" id="gustosRejilla"></ul>
       </div>
     </section>
 

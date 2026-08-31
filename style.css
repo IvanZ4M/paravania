@@ -589,7 +589,187 @@ img { display: block; max-width: 100%; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   3 · Galería   ·   acento: verde tallo
+   3 · La canción   ·   acento: rojo gerbera
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cancion__petalos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cancion__caja {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: clamp(.5rem, 2vw, .75rem);
+}
+
+.cancion__sobre {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .34em;
+  text-indent: .34em;
+  color: var(--tenue);
+}
+
+.cancion__titulo {
+  font-family: var(--serif);
+  font-size: var(--t-titulo);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--crema);
+  text-wrap: balance;
+}
+
+.cancion__artista {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  color: var(--rojo);
+  opacity: .9;
+}
+
+/* Marco del video: guarda el hueco antes de que exista el iframe */
+.cancion__marco {
+  position: relative;
+  width: 100%;
+  margin-top: clamp(.75rem, 3vw, 1.25rem);
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(245, 236, 228, .13);
+  border-radius: 4px;
+  background: linear-gradient(150deg, var(--bg-3), var(--bg-2) 70%);
+  overflow: hidden;
+}
+
+.cancion__video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ── Botón de play ──────────────────────────────────────────────────────── */
+.play {
+  position: relative;
+  width: clamp(66px, 20vw, 84px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--crema);
+  background: rgba(194, 56, 74, .16);
+  box-shadow: inset 0 0 0 1px rgba(194, 56, 74, .5);
+  transition:
+    transform var(--dur-corta) var(--ease),
+    opacity   var(--dur-media) var(--ease),
+    background var(--dur-corta) var(--ease);
+}
+
+.play__ic {
+  width: 38%;
+  height: 38%;
+  /* Sin margen: el triángulo ya está dibujado con su centroide en el centro
+     del viewBox (9.2→18, centroide en 12.13 de 24). Correrlo además lo
+     descuadra hacia la derecha. */
+}
+
+/* Halo lento: es una señal de "tócame", no un parpadeo */
+.play__halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(194, 56, 74, .45);
+  animation: halo 3.6s var(--ease-suave) infinite;
+}
+
+@keyframes halo {
+  0%        { transform: scale(1);    opacity: .6; }
+  70%, 100% { transform: scale(1.55); opacity: 0; }
+}
+
+.play:active { transform: scale(.94); background: rgba(194, 56, 74, .26); }
+
+/* Al tocar, el botón se va antes de que entre el video */
+.cancion.sonando .play {
+  opacity: 0;
+  transform: scale(.82);
+  pointer-events: none;
+}
+
+.cancion__pista {
+  margin-top: .35rem;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  text-indent: .32em;
+  color: var(--tenue);
+  transition: opacity var(--dur-larga) var(--ease);
+}
+.cancion.sonando .cancion__pista { opacity: 0; }
+
+/* ── La nota, ya sonando ────────────────────────────────────────────────── */
+/* De 0fr a 1fr: la caja crece sola y la sección se recentra sin brincos */
+.cancion__nota {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 900ms var(--ease-suave),
+    opacity            var(--dur-media) var(--ease);
+}
+.cancion.sonando .cancion__nota {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.cancion__nota-caja {
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+}
+
+.cancion__nota-linea {
+  max-width: 30ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-cuerpo);
+  line-height: 1.5;
+  color: var(--texto);
+  text-wrap: balance;
+  opacity: 0;
+  transform: translate3d(0, .5rem, 0);
+  transition:
+    opacity   var(--dur-larga) var(--ease) var(--retraso),
+    transform var(--dur-larga) var(--ease) var(--retraso);
+}
+.cancion__nota-linea:nth-of-type(1) { --retraso: 620ms; }
+.cancion__nota-linea:nth-of-type(2) { --retraso: 900ms; }
+
+.cancion.sonando .cancion__nota-linea { opacity: 1; transform: none; }
+
+/* El aviso de que la canción no se corta al avanzar. Llega al final,
+   cuando ya se acomodó en la canción. */
+.cancion__sigue {
+  margin-top: .5rem;
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--rojo);
+  opacity: 0;
+  transition: opacity 1200ms var(--ease) 2400ms;
+}
+.cancion.sonando .cancion__sigue { opacity: .78; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   4 · Galería   ·   acento: verde tallo
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* El carrusel sangra a todo lo ancho, sin el margen de las demás secciones */
@@ -838,186 +1018,6 @@ img { display: block; max-width: 100%; }
   color: var(--tenue);
   text-wrap: balance;
 }
-
-/* ══════════════════════════════════════════════════════════════════════════
-   4 · La canción   ·   acento: rojo gerbera
-   ══════════════════════════════════════════════════════════════════════════ */
-
-.cancion__petalos {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.cancion__caja {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  justify-items: center;
-  gap: clamp(.5rem, 2vw, .75rem);
-}
-
-.cancion__sobre {
-  font-size: var(--t-micro);
-  text-transform: uppercase;
-  letter-spacing: .34em;
-  text-indent: .34em;
-  color: var(--tenue);
-}
-
-.cancion__titulo {
-  font-family: var(--serif);
-  font-size: var(--t-titulo);
-  font-weight: 300;
-  line-height: 1.05;
-  color: var(--crema);
-  text-wrap: balance;
-}
-
-.cancion__artista {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: var(--t-chico);
-  color: var(--rojo);
-  opacity: .9;
-}
-
-/* Marco del video: guarda el hueco antes de que exista el iframe */
-.cancion__marco {
-  position: relative;
-  width: 100%;
-  margin-top: clamp(.75rem, 3vw, 1.25rem);
-  aspect-ratio: 16 / 9;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(245, 236, 228, .13);
-  border-radius: 4px;
-  background: linear-gradient(150deg, var(--bg-3), var(--bg-2) 70%);
-  overflow: hidden;
-}
-
-.cancion__video {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-}
-
-/* ── Botón de play ──────────────────────────────────────────────────────── */
-.play {
-  position: relative;
-  width: clamp(66px, 20vw, 84px);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: var(--crema);
-  background: rgba(194, 56, 74, .16);
-  box-shadow: inset 0 0 0 1px rgba(194, 56, 74, .5);
-  transition:
-    transform var(--dur-corta) var(--ease),
-    opacity   var(--dur-media) var(--ease),
-    background var(--dur-corta) var(--ease);
-}
-
-.play__ic {
-  width: 38%;
-  height: 38%;
-  /* Sin margen: el triángulo ya está dibujado con su centroide en el centro
-     del viewBox (9.2→18, centroide en 12.13 de 24). Correrlo además lo
-     descuadra hacia la derecha. */
-}
-
-/* Halo lento: es una señal de "tócame", no un parpadeo */
-.play__halo {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(194, 56, 74, .45);
-  animation: halo 3.6s var(--ease-suave) infinite;
-}
-
-@keyframes halo {
-  0%        { transform: scale(1);    opacity: .6; }
-  70%, 100% { transform: scale(1.55); opacity: 0; }
-}
-
-.play:active { transform: scale(.94); background: rgba(194, 56, 74, .26); }
-
-/* Al tocar, el botón se va antes de que entre el video */
-.cancion.sonando .play {
-  opacity: 0;
-  transform: scale(.82);
-  pointer-events: none;
-}
-
-.cancion__pista {
-  margin-top: .35rem;
-  font-size: var(--t-micro);
-  text-transform: uppercase;
-  letter-spacing: .32em;
-  text-indent: .32em;
-  color: var(--tenue);
-  transition: opacity var(--dur-larga) var(--ease);
-}
-.cancion.sonando .cancion__pista { opacity: 0; }
-
-/* ── La nota, ya sonando ────────────────────────────────────────────────── */
-/* De 0fr a 1fr: la caja crece sola y la sección se recentra sin brincos */
-.cancion__nota {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-  transition:
-    grid-template-rows 900ms var(--ease-suave),
-    opacity            var(--dur-media) var(--ease);
-}
-.cancion.sonando .cancion__nota {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-
-.cancion__nota-caja {
-  overflow: hidden;
-  display: grid;
-  justify-items: center;
-  gap: .5rem;
-}
-
-.cancion__nota-linea {
-  max-width: 30ch;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: var(--t-cuerpo);
-  line-height: 1.5;
-  color: var(--texto);
-  text-wrap: balance;
-  opacity: 0;
-  transform: translate3d(0, .5rem, 0);
-  transition:
-    opacity   var(--dur-larga) var(--ease) var(--retraso),
-    transform var(--dur-larga) var(--ease) var(--retraso);
-}
-.cancion__nota-linea:nth-of-type(1) { --retraso: 620ms; }
-.cancion__nota-linea:nth-of-type(2) { --retraso: 900ms; }
-
-.cancion.sonando .cancion__nota-linea { opacity: 1; transform: none; }
-
-/* El aviso de que la canción no se corta al avanzar. Llega al final,
-   cuando ya se acomodó en la canción. */
-.cancion__sigue {
-  margin-top: .5rem;
-  font-size: var(--t-micro);
-  text-transform: uppercase;
-  letter-spacing: .3em;
-  text-indent: .3em;
-  color: var(--rojo);
-  opacity: 0;
-  transition: opacity 1200ms var(--ease) 2400ms;
-}
-.cancion.sonando .cancion__sigue { opacity: .78; }
 
 /* ══════════════════════════════════════════════════════════════════════════
    5 · La carta   ·   acento: blanco crema
@@ -1281,6 +1281,30 @@ img { display: block; max-width: 100%; }
 }
 .gusto__cara--atras .gusto__num { color: #f0d9d3; opacity: .5; }
 
+/* Señal permanente en la esquina: esta tarjeta gira */
+.gusto__voltear {
+  position: absolute;
+  top: .5rem;
+  right: .6rem;
+  width: 15px;
+  height: 15px;
+  color: var(--crema);
+  opacity: .32;
+  transition: opacity var(--dur-corta) var(--ease);
+}
+.gusto__voltear svg { width: 100%; height: 100%; display: block; }
+.gusto:active .gusto__voltear { opacity: .7; }
+.gusto__cara--atras .gusto__voltear { display: none; }
+
+/* El asomo: la primera tarjeta gira un poco y regresa, para que se entienda
+   sin leer nada que son objetos que se voltean */
+@keyframes asomar {
+  0%   { transform: rotateY(0deg); }
+  42%  { transform: rotateY(34deg); }
+  100% { transform: rotateY(0deg); }
+}
+.gusto.asoma .gusto__giro { animation: asomar 1800ms var(--ease-suave); }
+
 .gusto__flor {
   position: relative;
   width: clamp(24px, 21%, 38px);
@@ -1342,15 +1366,27 @@ img { display: block; max-width: 100%; }
   text-wrap: pretty;
 }
 
+/* La instrucción: en serif, legible, con el ícono de girar al lado.
+   Antes era de 10px en mayúsculas y debajo de la rejilla, y se perdía. */
 .gustos__pista {
-  font-size: var(--t-micro);
-  text-transform: uppercase;
-  letter-spacing: .32em;
-  text-indent: .32em;
-  color: var(--tenue);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  color: var(--verde-claro);
+  opacity: .9;
   transition: opacity var(--dur-larga) var(--ease);
 }
 .gustos__pista.se-fue { opacity: 0; }
+
+.gustos__pista-ic {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  opacity: .8;
+}
 
 /* ══════════════════════════════════════════════════════════════════════════
    7 · Cierre   ·   acento: rojo gerbera
