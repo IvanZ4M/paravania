@@ -145,8 +145,11 @@
     const alRedimensionar = () => {
       clearTimeout(temporizador);
       temporizador = setTimeout(() => {
-        /* Ignora los micro-ajustes de la barra de direcciones */
-        if (Math.abs(window.innerHeight - anterior) < 90) return;
+        /* Solo se ignora el ruido de subpíxel. El umbral era de 90px para
+           esquivar la barra del navegador, pero como la página nunca hace
+           scroll esa barra no se colapsa nunca: lo único que lograba era
+           dejar la medida vieja y descentrar todo medio desfase. */
+        if (Math.abs(window.innerHeight - anterior) < 4) return;
         anterior = window.innerHeight;
         medirAlto();
       }, 160);

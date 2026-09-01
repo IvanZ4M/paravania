@@ -218,6 +218,13 @@ la tarjeta puesta. Reglas para no romperla:
 - **Una pestaña en segundo plano congela `requestAnimationFrame`.** Si al
   revisar parece que "no corren las animaciones" o fallan las capturas,
   comprobar `document.visibilityState` antes de buscar el bug en el código.
+- **`--alto` tiene que seguir al viewport de verdad.** Tenía un umbral de
+  90px "para esquivar la barra del navegador", pero como la página nunca
+  hace scroll esa barra no se colapsa nunca: lo único que lograba era
+  dejar la medida vieja tras cualquier cambio menor, con las secciones más
+  altas que la pantalla y todo el contenido medio desfase abajo. El umbral
+  ahora es de 4px, solo para ruido de subpíxel. Si algo se ve descentrado,
+  comparar `--alto` contra `documentElement.clientHeight` antes que nada.
 - **El padding vertical de `.seccion` tiene que ser simétrico.** El
   contenido se centra dentro de la caja, no de la pantalla: si abajo sobra
   más que arriba, todo queda corrido hacia arriba la mitad de esa
