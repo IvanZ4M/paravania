@@ -60,6 +60,27 @@
     { foto: 22, momento: '', linea: 'los dos, ya sin nada que explicar' }
   ];
 
+  /* ⚠️  ESTAS FRASES SON UN BORRADOR MÍO, NO TUYAS. Reescríbelas.
+     La página muestra una según el día y va rotando: se queda igual todo el
+     día y mañana cambia. Puedes poner las que quieras, cuantas quieras —
+     entre más haya, más tarda en repetirse.                                */
+  const NOTAS_DEL_DIA = [
+    'hoy también me acordé de ti.',
+    'sigo eligiéndote.',
+    'me haces bien.',
+    'no me acostumbro a la suerte que tengo.',
+    'cada día me gustas más.',
+    'gracias por seguir aquí.',
+    'eres mi parte favorita del día.',
+    'te pienso más de lo que te digo.',
+    'contigo hasta lo simple vale.',
+    'hoy quisiera estar contigo.',
+    'me alegra que hayas dicho que sí.',
+    'te quiero, por si hoy no te lo he dicho.',
+    'nada de esto se me hace poco.',
+    'sigo aquí, contando.'
+  ];
+
   /* Las 6 tarjetas que se voltean. Texto literal de Ivan.
      `flor` es cuál de las tres flores lleva: gerbera, rosa o lili.          */
   const GUSTOS = [
@@ -508,6 +529,47 @@
 
     tic();
     setInterval(tic, 1000);
+
+    /* ── La nota del día ─────────────────────────────────────────────────
+       Un día normal muestra una frase que rota. El día que cumplen mes,
+       el mismo bloque se convierte en el saludo de aniversario. */
+    const nota   = $('#notaDia');
+    const marca  = $('#notaDiaMarca');
+    const texto  = $('#notaDiaTexto');
+
+    const CANTIDAD = ['', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis',
+                      'siete', 'ocho', 'nueve', 'diez', 'once', 'doce'];
+
+    function cuantoLlevamos(meses) {
+      if (meses % 12 === 0) {
+        const anos = meses / 12;
+        return anos === 1 ? 'un año' : `${CANTIDAD[anos] || anos} años`;
+      }
+      return meses === 1 ? 'un mes' : `${CANTIDAD[meses] || meses} meses`;
+    }
+
+    function pintarNota() {
+      const hoy = new Date();
+      const aCero = (f) => new Date(f.getFullYear(), f.getMonth(), f.getDate());
+      const dias = Math.round((aCero(hoy) - aCero(FECHA_INICIO)) / 86400000);
+
+      const meses = (hoy.getFullYear() - FECHA_INICIO.getFullYear()) * 12
+                  + (hoy.getMonth() - FECHA_INICIO.getMonth());
+      const esAniversario = hoy.getDate() === FECHA_INICIO.getDate() && meses >= 1;
+
+      nota.classList.toggle('es-aniversario', esAniversario);
+
+      if (esAniversario) {
+        texto.textContent = `Hoy cumplimos ${cuantoLlevamos(meses)}.`;
+      } else {
+        marca.textContent = `día ${dias}`;
+        texto.textContent = NOTAS_DEL_DIA[dias % NOTAS_DEL_DIA.length];
+      }
+    }
+
+    pintarNota();
+    /* Por si deja la página abierta y cruza la medianoche */
+    setInterval(pintarNota, 60000);
   }
 
   /* ════════════════════════════════════════════════════════════════════════

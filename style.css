@@ -442,7 +442,10 @@ img { display: block; max-width: 100%; }
 .sobre {
   position: relative;
   display: block;
-  width: min(84vw, 320px);
+  /* 100% y no 84vw: con vw el sobre puede salir más ancho que su caja, y
+     un elemento de grid más ancho que su área se apoya en el borde
+     izquierdo y desborda todo hacia la derecha. Con 100% nunca la excede. */
+  width: min(100%, 320px);
   aspect-ratio: 3 / 2;
   opacity: 0;
   transform: translate3d(0, 2.2rem, 0) scale(.955);
@@ -1623,6 +1626,47 @@ img { display: block; max-width: 100%; }
 }
 
 .cierre__filete { width: min(100%, 13rem); }
+
+/* La nota del día. En día normal es un post scriptum discreto; el día que
+   cumplen mes se convierte en el saludo y se lleva el acento rojo. */
+.notadia {
+  width: min(100%, 21rem);
+  margin-top: clamp(.5rem, 2.5vw, .9rem);
+  padding-top: clamp(.7rem, 3vw, 1.1rem);
+  border-top: 1px solid rgba(245, 236, 228, .13);
+  display: grid;
+  justify-items: center;
+  gap: .3rem;
+  transition: border-color var(--dur-larga) var(--ease);
+}
+
+.notadia__marca {
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--tenue);
+  opacity: .8;
+}
+
+.notadia__texto {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--t-chico);
+  line-height: 1.35;
+  color: var(--texto);
+  text-wrap: balance;
+}
+
+/* El día del aniversario */
+.notadia.es-aniversario { border-top-color: rgba(194, 56, 74, .4); }
+.notadia.es-aniversario .notadia__marca { display: none; }
+.notadia.es-aniversario .notadia__texto {
+  font-style: normal;
+  font-size: var(--t-sub);
+  line-height: 1.2;
+  color: var(--crema);
+}
 
 .cierre__final {
   font-family: var(--serif);

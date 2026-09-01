@@ -72,13 +72,25 @@ Transición suave entre secciones.
 6. **Cosas que me gustan de ti** — 6 tarjetas que se voltean al tocar.
 7. **Cierre** — Cuenta regresiva a la próxima vez que se vean.
    Última línea: "Y ya estoy contando los días."
+   La página vive en la pantalla de inicio de su iPhone, así que **no puede
+   ser igual siempre**:
+   - El contador **no se muere**: al pasar el reencuentro se pasa solo al
+     próximo mes que cumplen y se renueva mes con mes. A los 12, "para
+     nuestro primer año".
+   - **La nota del día** rota una frase de `NOTAS_DEL_DIA` según el día:
+     igual todo el día, distinta mañana.
+   - El día que cumplen mes, ese mismo bloque se vuelve el saludo de
+     aniversario ("Hoy cumplimos dos meses.") y se lleva el acento rojo.
 
 ### Constantes editables (arriba de `script.js`)
 
 ```js
-const FECHA_INICIO   = ...; // 1 agosto 2026
-const FECHA_REENCUENTRO = ...; // la pone Ivan
-const YOUTUBE_ID     = ...;
+const FECHA_INICIO      = ...; // 1 agosto 2026
+const FECHA_REENCUENTRO = ...; // 2 septiembre 2026, 15:30
+const YOUTUBE_ID        = ...;
+const GALERIA           = [...]; // orden, momento y línea de cada foto
+const GUSTOS            = [...]; // las 6 tarjetas
+const NOTAS_DEL_DIA     = [...]; // frases que rotan en el cierre
 ```
 
 Van al principio del archivo, agrupadas y comentadas, para que se editen sin
