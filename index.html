@@ -51,7 +51,7 @@
 <!-- El ?v= es para reventar la caché: súbele el número cada vez que
      cambies el CSS o el JS, o los navegadores servirán los viejos.
      El de WhatsApp es especialmente terco con esto. -->
-<link rel="stylesheet" href="./style.css?v=5">
+<link rel="stylesheet" href="./style.css?v=8">
 </head>
 <body>
 
@@ -196,6 +196,9 @@
           stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
 </svg>
+
+<!-- La floración: inunda la pantalla al abrir el sobre. La llena el JS -->
+<div class="floracion" id="floracion" aria-hidden="true"></div>
 
 <!-- Pétalos flotando de fondo (los llena el JS) -->
 <div class="fondo" id="fondo" aria-hidden="true"></div>
@@ -462,7 +465,7 @@
              retraso para poder abrirse uno tras otro -->
         <svg class="cierre__flor" id="cierreFlor" viewBox="0 0 100 100" aria-hidden="true"></svg>
 
-        <p class="cierre__sobre" data-revelar>para volver a verte</p>
+        <p class="cierre__sobre" id="cierreSobre" data-revelar>para volver a verte</p>
 
         <div class="cifras" data-revelar role="timer" aria-live="off"
              aria-label="Cuenta regresiva para vernos">
@@ -501,6 +504,6 @@
   <svg class="siguiente__ic" aria-hidden="true"><use href="#ic-abajo"/></svg>
 </button>
 
-<script src="./script.js?v=5" defer></script>
+<script src="./script.js?v=8" defer></script>
 </body>
 </html>

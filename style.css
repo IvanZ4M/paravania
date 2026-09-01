@@ -274,6 +274,80 @@ img { display: block; max-width: 100%; }
   50%      { transform: translate3d(0, 4px, 0); }
 }
 
+/* ── Floración: las flores inundan la pantalla al abrir el sobre ────────── */
+/* Solo se animan las TRES capas, no las 30 flores. Cada capa crece desde el
+   centro, así que las flores se separan hacia afuera como si florecieran.
+   Animar cada flor por separado ahogaría un celular. */
+.floracion {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+.floracion.floreciendo { visibility: visible; }
+
+/* Un rubor cálido debajo, para que la pantalla se sienta llena de verdad */
+.floracion::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(112, 24, 40, .62) 0%, rgba(60, 14, 24, .34) 42%, transparent 72%);
+  opacity: 0;
+}
+.floracion.floreciendo::before {
+  animation: rubor 2500ms var(--ease-suave) 420ms both;
+}
+@keyframes rubor {
+  0%   { opacity: 0; transform: scale(.35); }
+  20%  { opacity: 1; }
+  58%  { opacity: 1; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.floracion__capa {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  transform: scale(var(--e0));
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.floracion.floreciendo .floracion__capa {
+  animation: florecer var(--dur) var(--ease-suave) var(--espera) both;
+}
+
+@keyframes florecer {
+  0%   { transform: scale(var(--e0)) rotate(0deg);            opacity: 0; }
+  16%  {                                                      opacity: 1; }
+  52%  { transform: scale(var(--e1)) rotate(var(--giro));     opacity: 1; }
+  66%  { transform: scale(var(--e1b)) rotate(var(--giro));    opacity: 1; }
+  100% { transform: scale(var(--e2)) rotate(var(--giro2));    opacity: 0; }
+}
+
+/* Cada flor solo hace un fundido con retraso según su distancia al centro:
+   opacity es baratísima y basta para que se lea como floración hacia afuera */
+.floracion__flor {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--w);
+  margin: calc(var(--w) / -2);
+  transform: rotate(var(--r));
+  opacity: 0;
+}
+.floracion.floreciendo .floracion__flor {
+  animation: brotar 620ms var(--ease) var(--retraso) both;
+}
+@keyframes brotar { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .floracion { display: none; }
+}
+
 /* ── Fondo: pétalos flotando ────────────────────────────────────────────── */
 .fondo {
   position: fixed;

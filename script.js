@@ -301,6 +301,75 @@
     destino.insertAdjacentHTML('beforeend', trozos.join(''));
   }
 
+  /* ════════════════════════════════════════════════════════════════════════
+     La floración
+     Tres capas de flores que crecen desde el centro hasta tapar la pantalla
+     y luego se disuelven. Se anima la CAPA, no cada flor: así son tres
+     elementos en movimiento y no treinta.
+     ════════════════════════════════════════════════════════════════════════ */
+
+  const FLORES = ['fl-gerbera', 'fl-rosa', 'fl-rosa', 'fl-lili'];   /* la roja puntúa, no domina */
+
+  /* Cada capa es un plano. `span` es el trozo del centro donde se siembran:
+     como la capa CRECE, lo que está fuera de ese centro nunca llega a verse.
+     Sembrar en toda la pantalla desperdiciaba la mayoría de las flores. */
+  const CAPAS = [
+    { cols: 5, filas: 4, span: 76, w: [5, 10],  e0: .55, e1: 1.45, e2: 1.95, giro: -13, espera: 360, dur: 2450 },
+    { cols: 5, filas: 4, span: 60, w: [10, 18], e0: .34, e1: 1.85, e2: 2.50, giro:   9, espera: 450, dur: 2500 },
+    { cols: 4, filas: 3, span: 44, w: [20, 34], e0: .18, e1: 2.45, e2: 3.30, giro:  -6, espera: 540, dur: 2520 }
+  ];
+
+  function initFloracion() {
+    const capa = $('#floracion');
+    if (menosMovimiento.matches) return;
+
+    capa.innerHTML = CAPAS.map((c) => {
+      const flores = [];
+      const paso = { x: c.span / c.cols, y: c.span / c.filas };
+      const orilla = (100 - c.span) / 2;
+
+      /* Rejilla con desorden: al azar puro quedan huecos y racimos */
+      for (let f = 0; f < c.filas; f++) {
+        for (let col = 0; col < c.cols; col++) {
+          const x = orilla + paso.x * (col + .5) + azar(-paso.x * .42, paso.x * .42);
+          const y = orilla + paso.y * (f + .5) + azar(-paso.y * .42, paso.y * .42);
+
+          /* Las del centro abren primero: se lee como floración hacia afuera */
+          const dist = Math.hypot(x - 50, y - 50) / (c.span * .72);
+          const cual = FLORES[Math.floor(Math.random() * FLORES.length)];
+          const rojo = cual === 'fl-gerbera';
+
+          flores.push(`<svg class="floracion__flor" viewBox="0 0 100 100" style="
+              --x:${x.toFixed(1)}%; --y:${y.toFixed(1)}%;
+              --w:${azar(c.w[0], c.w[1]).toFixed(1)}vmin;
+              --r:${azar(-180, 180).toFixed(0)}deg;
+              --retraso:${(c.espera + dist * 560).toFixed(0)}ms;
+              ${rojo
+                ? `--fl-rojo:${Math.random() < .5 ? '#c2384a' : '#a3283a'};
+                   --fl-rojo-hondo:#7e1a2b; --fl-centro:#571020;`
+                : `--fl-crema:#f2e6dc; --fl-crema-2:#dcc8ba; --fl-linea:#bd9d8b;
+                   --fl-vena:#d8c2b4; --fl-tallo:#7d8f73;`}
+            "><use href="#${cual}"/></svg>`);
+        }
+      }
+
+      return `<div class="floracion__capa" style="
+        --e0:${c.e0}; --e1:${c.e1}; --e1b:${(c.e1 * 1.08).toFixed(2)}; --e2:${c.e2};
+        --giro:${c.giro}deg; --giro2:${c.giro * 1.9}deg;
+        --espera:${c.espera}ms; --dur:${c.dur}ms;
+      ">${flores.join('')}</div>`;
+    }).join('');
+  }
+
+  /** Dispara la floración una sola vez */
+  function florecer() {
+    const capa = $('#floracion');
+    if (menosMovimiento.matches || capa.classList.contains('floreciendo')) return;
+    capa.classList.add('floreciendo');
+    /* Al terminar se apaga: no debe quedar tapando nada */
+    setTimeout(() => capa.classList.remove('floreciendo'), 3200);
+  }
+
   function initFondo() {
     const fondo = $('#fondo');
     const cuantos = window.innerWidth < 600 ? 9 : 14;
@@ -387,8 +456,10 @@
         return;
       }
 
-      /* Lacre → solapa → la tarjeta sale → la tarjeta se asienta */
+      /* Lacre → solapa → LAS FLORES INUNDAN LA PANTALLA → detrás de ellas
+         la tarjeta sale y se asienta → las flores se retiran y ahí está */
       sobre.classList.add('abriendo');
+      florecer();
       setTimeout(() => sobre.classList.add('saliendo'), 640);
       setTimeout(() => sobre.classList.add('abierto'), 1560);
       setTimeout(() => btnSig.classList.remove('esta-fuera'), 2500);
@@ -803,6 +874,43 @@
       horas:   $('#fHoras'),
       minutos: $('#fMinutos')
     };
+    const etiqueta = $('#cierreSobre');
+
+    const ORDINALES = ['', 'primer', 'segundo', 'tercer', 'cuarto', 'quinto',
+                       'sexto', 'séptimo', 'octavo', 'noveno', 'décimo',
+                       'onceavo', 'doceavo'];
+
+    /* El próximo día del mes en que cumplen, siempre en el futuro */
+    function proximoMes(desde) {
+      const d = new Date(FECHA_INICIO);
+      d.setFullYear(desde.getFullYear(), desde.getMonth(), FECHA_INICIO.getDate());
+      if (d.getTime() <= desde.getTime()) d.setMonth(d.getMonth() + 1);
+      return d;
+    }
+
+    function comoSeLlama(fecha) {
+      const meses = (fecha.getFullYear() - FECHA_INICIO.getFullYear()) * 12
+                  + (fecha.getMonth() - FECHA_INICIO.getMonth());
+      if (meses > 0 && meses % 12 === 0) {
+        const anos = meses / 12;
+        return `para nuestro ${ORDINALES[anos] || anos + 'º'} año`;
+      }
+      return ORDINALES[meses]
+        ? `para nuestro ${ORDINALES[meses]} mes`
+        : `para nuestro mes ${meses}`;
+    }
+
+    /* Mientras la fecha del reencuentro no llegue, se cuenta hacia ella.
+       Cuando pasa, el contador NO se queda en cero: se pasa solo al próximo
+       mes que cumplen, y se renueva mes con mes sin que nadie lo toque. */
+    function objetivo() {
+      const ahora = new Date();
+      if (FECHA_REENCUENTRO.getTime() > ahora.getTime()) {
+        return { fecha: FECHA_REENCUENTRO, texto: 'para volver a verte' };
+      }
+      const prox = proximoMes(ahora);
+      return { fecha: prox, texto: comoSeLlama(prox) };
+    }
 
     let primera = true;
 
@@ -818,8 +926,10 @@
     }
 
     function tic() {
-      /* Si la fecha ya pasó se queda en cero en vez de contar al revés */
-      const falta = Math.max(0, FECHA_REENCUENTRO.getTime() - Date.now());
+      const meta = objetivo();
+      if (etiqueta.textContent !== meta.texto) etiqueta.textContent = meta.texto;
+
+      const falta = Math.max(0, meta.fecha.getTime() - Date.now());
       const minutos = Math.floor(falta / 60000);
 
       pintar(campos.dias,    String(Math.floor(minutos / 1440)));
@@ -853,6 +963,7 @@
     construirProgreso();
     activarGestos();
     initFondo();
+    initFloracion();
     initObservador();
     initPortada();
     initContador();

@@ -141,6 +141,22 @@ no mete verde también.
   hoja de la carta comparten canto que atrapa luz, bordes que se curvan y
   grano de 2%.
 
+### La floración
+
+Al abrir el sobre, las flores inundan la pantalla ~2.5s y al retirarse dejan
+la tarjeta puesta. Reglas para no romperla:
+
+- **Se animan las TRES capas, nunca las 52 flores.** Cada capa crece desde su
+  centro, así que las flores se separan hacia afuera solas. Animar flor por
+  flor ahoga un celular; así van 3 elementos en movimiento (medido: 143 fps,
+  cero cuadros perdidos).
+- **Las flores se siembran solo en el centro** (`span` por capa). Como la capa
+  crece, lo que se siembra en la orilla nunca llega a verse.
+- **Rejilla con desorden, no azar puro.** Al azar quedan huecos y racimos, y
+  se ve el fondo entre flores.
+- El retraso de cada flor sale de su distancia al centro: se lee como algo
+  que florece hacia afuera y no como un telón que cae.
+
 ### Movimiento — "que se sienta caro"
 
 - **Duraciones: 600–900ms.** Nada de 200ms nerviosos.
