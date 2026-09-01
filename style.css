@@ -1652,8 +1652,10 @@ img { display: block; max-width: 100%; }
 .notadia__texto {
   font-family: var(--serif);
   font-style: italic;
-  font-size: var(--t-chico);
-  line-height: 1.35;
+  /* Cuerpo y no "chico": es lo único de la página que ella va a leer todos
+     los días, y Cormorant a 13px queda demasiado menuda para eso. */
+  font-size: var(--t-cuerpo);
+  line-height: 1.4;
   color: var(--texto);
   text-wrap: balance;
 }
