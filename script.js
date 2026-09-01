@@ -60,10 +60,9 @@
     { foto: 22, momento: '', linea: 'los dos, ya sin nada que explicar' }
   ];
 
-  /* ⚠️  ESTAS FRASES SON UN BORRADOR MÍO, NO TUYAS. Reescríbelas.
-     La página muestra una según el día y va rotando: se queda igual todo el
-     día y mañana cambia. Puedes poner las que quieras, cuantas quieras —
-     entre más haya, más tarda en repetirse.                                */
+  /* Las frases de Ivan. La página muestra una según el día y va rotando:
+     se queda igual todo el día y mañana cambia. Se pueden agregar las que
+     sean — entre más haya, más tarda el ciclo en repetirse.            */
   const NOTAS_DEL_DIA = [
     'hoy también amanecí pensando en ti',
     'me haces mucho bien, amor',
@@ -72,32 +71,23 @@
     'te amo, y hoy más',
     'me encanta cómo piensas, amor. es lo que más me gusta de ti',
     'admiro mucho la mujer que eres',
-    'nmchs qué bonita eres, y no hablo nada más de lo de afuera',
     'me gusta la forma en que ves las cosas',
     'eres muy buena en lo que haces y me da orgullo',
-    'ya quiero que sea la próxima vez que nos veamos en el súper jajaja',
-    'otra vez se nos van a hacer las 3, ya sé',
     'quién iba a decir que del servicio iba a salir esto',
     'el 1 de agosto sigue siendo el mejor día',
-    'todavía me acuerdo de tu cara cuando te quité la venda',
-    'no necesito hacer nada, con estar contigo ya estoy bien',
-    'te extraño, amor, aunque te haya visto ayer',
     'siempre quiero estar contigo, ya te lo he dicho',
     'hoy te extrañé más de lo normal',
-    'si estás leyendo esto es porque te quiero mucho jajaja',
-    'no tenía nada importante que decirte, nada más quería decirte algo',
-    'amor, ya te extrañé otra vez jajaja',
+    'si estás leyendo esto es porque te quiero mucho',
+    'amor, ya te extrañé otra vez',
     'spoiler: te amo',
     'vas a poder con todo, amor. yo sé',
     'si hoy fue pesado, aquí estoy',
     'descansa, amor, te lo mereces',
     'no tienes que estar bien todos los días',
-    'contigo todo se siente fácil, y eso no me había pasado',
     'me haces querer hacer las cosas bien',
     'nunca me habían dado tantas ganas de ver a alguien',
     'gracias por dejarme quererte así',
     'esto es lo más bonito que me ha pasado, amor',
-    'osea de verdad, qué suerte tengo',
     'sigo sin creerme que seas mi novia'
   ];
 
