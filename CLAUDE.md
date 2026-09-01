@@ -218,9 +218,16 @@ la tarjeta puesta. Reglas para no romperla:
 - **Una pestaña en segundo plano congela `requestAnimationFrame`.** Si al
   revisar parece que "no corren las animaciones" o fallan las capturas,
   comprobar `document.visibilityState` antes de buscar el bug en el código.
+- **El padding vertical de `.seccion` tiene que ser simétrico.** El
+  contenido se centra dentro de la caja, no de la pantalla: si abajo sobra
+  más que arriba, todo queda corrido hacia arriba la mitad de esa
+  diferencia. El aire extra para el botón solo lo llevan `.galeria` y
+  `.gustos`, cuyo contenido llena la pantalla y ahí no se percibe.
 - **Ocultar con `opacity: 0` no libera el espacio.** Si un elemento oculto
-  sigue en el flujo, descentra a sus vecinos (pasó con el contador de la
-  galería en la tarjeta de cierre).
+  sigue en el flujo, descentra a sus vecinos. Pasó dos veces: el contador
+  de la galería en la tarjeta de cierre, y el "toca para abrir" de la
+  portada, que al desvanecerse dejaba un hueco que empujaba la tarjeta
+  25px arriba del centro.
 
 ## Convenciones de código
 
