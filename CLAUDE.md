@@ -125,6 +125,22 @@ no mete verde también.
 - Google Fonts con `<link rel="preconnect">` + `<link rel="preload">` para que
   **no haya salto de texto (FOUT)**. `font-display: swap` con fallback métrico cercano.
 
+### Profundidad y ambiente
+
+- **Luz de ambiente por sección.** `--ambiente` y `--ambiente-2` son colores
+  registrados con `@property` (por eso se pueden animar) y cambian de tono
+  según `[data-seccion]`, en 1600ms. Cada sección tiene la temperatura de su
+  acento. Es lo que evita que el fondo se sienta un plano fijo.
+- **Las secciones inactivas se quedan atrás** (`scale(.935)`). Al deslizar,
+  la que entra crece hasta su tamaño real: el movimiento gana capas en vez
+  de ser un carrusel plano.
+- **Los pétalos tienen planos.** Tamaño, velocidad y opacidad van
+  correlacionados: grande = rápido = más visible = cerca de la cámara.
+  Sortearlos por separado los aplana a todos en un mismo plano.
+- **El papel es el mismo en toda la página**: la tarjeta de la portada y la
+  hoja de la carta comparten canto que atrapa luz, bordes que se curvan y
+  grano de 2%.
+
 ### Movimiento — "que se sienta caro"
 
 - **Duraciones: 600–900ms.** Nada de 200ms nerviosos.

@@ -166,6 +166,7 @@
     raiz.style.setProperty('--i', indice);
     raiz.dataset.seccion = entra.id;
     entra.classList.add('lista');   /* dispara ornamentos y entradas propias */
+    secciones.forEach((s) => s.classList.toggle('esta-activa', s === entra));
 
     $$('.progreso__punto', barra).forEach((p, i) => {
       p.setAttribute('aria-current', String(i === indice));
@@ -278,14 +279,19 @@
     const trozos = [];
 
     for (let i = 0; i < cuantos; i++) {
-      const ancho   = azar(11, 26) * escala;
-      const duracion = azar(15, 30);
+      /* Profundidad: los pétalos "cerca de la cámara" son más grandes, caen
+         más rápido y se ven más; los de atrás son chicos, lentos y tenues.
+         Antes tamaño y velocidad se sorteaban por separado y todo caía en
+         un mismo plano. */
+      const cerca = Math.random();
+      const ancho    = (11 + cerca * 17) * escala;
+      const duracion = 30 - cerca * 13;
       trozos.push(`
         <svg class="petalo" aria-hidden="true" viewBox="0 0 24 36" style="
           --x: ${azar(-4, 98).toFixed(2)}%;
           --w: ${ancho.toFixed(1)}px;
           --c: ${TINTES[Math.floor(Math.random() * TINTES.length)]};
-          --op: ${azar(opMin, opMax).toFixed(3)};
+          --op: ${(opMin + (opMax - opMin) * (.25 + cerca * .75)).toFixed(3)};
           --dx: ${azar(-70, 70).toFixed(0)}px;
           --giro: ${azar(-320, 320).toFixed(0)}deg;
           --dur: ${duracion.toFixed(1)}s;
@@ -842,6 +848,7 @@
     raiz.style.setProperty('--n', total);
     raiz.style.setProperty('--i', 0);
     raiz.dataset.seccion = secciones[0].id;
+    secciones[0].classList.add('esta-activa');
 
     construirProgreso();
     activarGestos();
@@ -862,7 +869,9 @@
      nada aparezca con la tipografía de respaldo. */
   if (document.fonts?.ready) {
     document.fonts.ready.then(init);
-    setTimeout(init, 2200);   /* red de seguridad si las fuentes tardan */
+    /* Red de seguridad corta: con mala señal, esperar a las fuentes deja la
+       pantalla en negro. Vale más arrancar y que la tipografía entre tarde. */
+    setTimeout(init, 1200);
   } else {
     init();
   }
