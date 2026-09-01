@@ -48,7 +48,10 @@
   }
 </style>
 
-<link rel="stylesheet" href="./style.css">
+<!-- El ?v= es para reventar la caché: súbele el número cada vez que
+     cambies el CSS o el JS, o los navegadores servirán los viejos.
+     El de WhatsApp es especialmente terco con esto. -->
+<link rel="stylesheet" href="./style.css?v=3">
 </head>
 <body>
 
@@ -498,6 +501,6 @@
   <svg class="siguiente__ic" aria-hidden="true"><use href="#ic-abajo"/></svg>
 </button>
 
-<script src="./script.js" defer></script>
+<script src="./script.js?v=3" defer></script>
 </body>
 </html>

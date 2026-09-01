@@ -424,10 +424,12 @@ img { display: block; max-width: 100%; }
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: .38rem;
-  gap: 2.3cqw;
-  padding: .85rem;
-  padding: 5.2cqw;
+  /* OJO: aquí NO se usa cqw. El cqw se mide contra la caja de contenido,
+     y el padding es lo que define esa caja: usarlo en el contenedor mismo
+     es circular y el navegador termina calculando 79px de padding.
+     Las unidades de contenedor van solo en los hijos. */
+  gap: clamp(.3rem, 1.9vw, .5rem);
+  padding: clamp(.7rem, 4.5vw, 1.1rem);
   border-radius: 3px;
   background: linear-gradient(#f8f1ea, #eee1d7);
   /* La tipografía de adentro se mide contra la tarjeta, no contra la

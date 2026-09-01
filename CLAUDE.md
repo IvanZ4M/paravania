@@ -165,6 +165,15 @@ no mete verde también.
   La instrucción de que las tarjetas se voltean estaba ahí y pasaba
   desapercibida en celular. Va arriba, en serif, con ícono — y sobre todo,
   la primera tarjeta se asoma sola: el movimiento explica mejor que el texto.
+- **Las unidades de contenedor (`cqw`) van en los hijos, nunca en el
+  contenedor.** El `cqw` se mide contra la caja de contenido, y `padding`
+  es lo que define esa caja: usarlo en el propio contenedor es circular y
+  el navegador acaba calculando disparates (79px de padding en la tarjeta
+  de la portada). Al revisar, comparar la caja de contenido contra el
+  tamaño del elemento — si la interior es mayor, algo está mal.
+- **Una pestaña en segundo plano congela `requestAnimationFrame`.** Si al
+  revisar parece que "no corren las animaciones" o fallan las capturas,
+  comprobar `document.visibilityState` antes de buscar el bug en el código.
 - **Ocultar con `opacity: 0` no libera el espacio.** Si un elemento oculto
   sigue en el flujo, descentra a sus vecinos (pasó con el contador de la
   galería en la tarjeta de cierre).
